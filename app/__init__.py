@@ -1,35 +1,28 @@
-import redis
 import logging
 from flask import Flask
 from logging.handlers import RotatingFileHandler
-from configs import configs
-
-redis_store = None
+from configs import (configs, Config)
+from celery import Celery
+celery = Celery(
+        __name__,
+        broker=Config.CELERY_BROKER_URL,
+        backend=Config.CELERY_RESULT_BACKEND,
+        include=['app.spider_store']
+    )
 
 
 def create_app(config_name):
     app = Flask(__name__)
     app.config.from_object(configs[config_name])
-    global redis_store
-    redis_store = redis.StrictRedis(
-        host=configs[config_name].REDIS_HOST,
-        port=configs[config_name].REDIS_PORT,
-        db=configs[config_name].REDIS_DB,
-        decode_responses=True)
+    celery.conf.update(app.config)
+    celery.autodiscover_tasks(["app.spider_store"])
 
     # 注册路由
-    from info.modules.index import index_blue
+    from app.modules.index import index_blue
     app.register_blueprint(index_blue)
 
-    from info.modules.download import download_blue
+    from app.modules.download import download_blue
     app.register_blueprint(download_blue)
-
-    # 404
-    # @app.errorhandler(404)
-    # def page_not_found(_):
-    #     user = g.user
-    #     data = {"user": user.to_dict() if user else None}
-    #     return render_template('news/404.html', data=data)
 
     return app
 

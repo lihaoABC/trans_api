@@ -1,5 +1,5 @@
 from flask_script import Manager
-from info import create_app, set_logs
+from app import create_app, set_logs
 
 
 app = create_app('development')
@@ -9,4 +9,5 @@ set_logs('development')
 
 
 if __name__ == '__main__':
-    manager.run()
+    app.run(host='0.0.0.0', port=5001, debug=True)
+    # manager.run()
