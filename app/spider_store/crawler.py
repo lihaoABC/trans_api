@@ -3,10 +3,20 @@ import datetime
 import ftplib
 import logging
 import re
+import subprocess
+
 import requests
 
-from app.spider_store.configs import (SITES, POST_API, POST_USER_AGENT, )
-from app.spider_store.common import (r1, img_download, download_urls)
+from app.spider_store.configs import (SITES, POST_API, POST_USER_AGENT,
+                                      FTP_HOST, FTP_PORT, FTP_USER, FTP_PASSWORD)
+from app.spider_store.common import (
+    r1,
+    img_download,
+    download_urls,
+    get_output_dir,
+    get_output_name,
+
+)
 from app.spider_store.utils.ftp_client import UploadsFiles
 from app.spider_store.run_spider import import_extractor
 from app.spider_store.utils.response_code import COD
@@ -46,19 +56,16 @@ def check_url(url, mongo):
     logging.debug("site is {}".format(k))
     if k not in SITES:
         if mongo.exists(url):
-            message = r'不支持的url'
-            mongo.update(url, message)
+            mongo.update(url, COD.URLES)
             raise AssertionError(r'不支持的url')
         else:
-            message = r'不支持的url'
-            info = mongo.info(url, message)
+            info = mongo.info(url, COD.URLES)
             mongo.insert(info)
             raise AssertionError(r'不支持的url')
     else:
         if mongo.exists(url):
             if mongo.block(url):
-                message = r'此url重复'
-                mongo.update(url, message)
+                mongo.update(url, COD.URLEX)
                 raise AssertionError(r'此url重复')
         else:
             info = mongo.info(url, COD.BEGIN)
@@ -81,6 +88,7 @@ def get_detail_info(k, url, mongo):
     data = params.download(url)
     if data is not None:
         logging.debug('Data is %s' % data)
+        mongo.update(url, COD.GETINFO, data["title"])
         return data
     else:
         mongo.update(url, COD.NODATA)
@@ -107,7 +115,8 @@ def thumbnail_download(data, url, mongo):
     else:
         # 使用openCV生成缩略图，暂未开发
         logging.debug(r'缩略图为空，使用openCV生成缩略图，暂未开发')
-        pass
+        mongo.update(url, COD.IMGNIL)
+        raise AssertionError(r'缩略图为空')
 
 
 def video_download(data, url, mongo, **kwargs):
@@ -115,7 +124,7 @@ def video_download(data, url, mongo, **kwargs):
     根据url下载视频
     :return:
     """
-    logging.debug(r'开始下载视频: %s' % data['video_url'])
+    logging.debug(r'开始下载视频: {}'.format(url))
     mongo.update(url, COD.REDVIDEO)
     if data['video_url'] is not None:
         video_local_files = download_urls(
@@ -127,48 +136,115 @@ def video_download(data, url, mongo, **kwargs):
             **kwargs
         )
         if video_local_files is not None:
-            logging.debug(r'下载视频成功')
+            logging.debug(r'{}:下载视频成功'.format(url))
             mongo.update(url, COD.GETVIDEO)
         else:
-            logging.debug(r"下载视频失败")
+            logging.debug(r"{}:下载视频失败".format(url))
             mongo.update(url, COD.VIDEOERR)
-            raise AssertionError(r'下载视频失败')
+            raise AssertionError(r'{}:下载视频失败'.format(url))
     else:
-        logging.debug(r"视频地址为空")
+        if kwargs["key"] == "bilibili":
+            filename = get_output_name()
+            path = get_output_dir()
+            a = subprocess.run(['you-get', '-i', url], stdout=subprocess.PIPE)
+            dash = a.stdout.decode().replace(' ', '').replace('\n', '')
+            _format = re.findall(r"format:(.*?)container:(.*?)quality", dash, re.S)
+            _format = dict(_format)
+            for d in list(_format.keys()):
+                rd = repr(d).replace(r"\x1b[0m'", '').replace(r"'\x1b[7m", '')
+                _format[rd] = _format.pop(d)
+            logging.debug("dash_dict is {}".format(_format))
+            if 'dashs-flv360' in list(_format.keys()):
+                ext = _format["dash-flv360"]
+                if ext == "mp4":
+                    try:
+
+                        subprocess.check_call(
+                            ['you-get',
+                             '--format=dash-flv360',
+                             '-o',
+                             '{}'.format(path),
+                             '-O',
+                             '{}'.format(filename),
+                             url],
+                            shell=False
+                        )
+                        logging.debug(r'{}:下载视频成功'.format(url))
+                        mongo.update(url, COD.GETVIDEO)
+                        return 'http://img.dou.gxnews.com.cn/' + path.split('/')[-2] + '/' + filename + '.mp4'
+                    except Exception:
+                        logging.debug(r"{}:执行视频下载失败".format(url))
+                        mongo.update(url, COD.VIDEOERR)
+                        raise Exception("{}:执行视频下载失败".format(url))
+
+            else:
+                try:
+                    subprocess.check_call(
+                        ['you-get',
+                         '--format=flv360',
+                         '-o',
+                         '{}'.format(path),
+                         '-O',
+                         '{}'.format(filename),
+                         url],
+                        shell=False
+                    )
+                    logging.debug(r'{}:下载视频成功'.format(url))
+                    mongo.update(url, COD.GETVIDEO)
+                    logging.debug(r"{}:视频转码中".format(url))
+                    mongo.update(url, COD.RESET)
+                    subprocess.check_call(
+                        ['ffmpeg',
+                         '-i',
+                         '{}'.format(path + filename + '.flv'),
+                         '{}'.format(path + filename + '.mp4'),
+                         ],
+                        shell=False
+                    )
+                    logging.debug(r"{}:视频转码成功".format(url))
+                    mongo.update(url, COD.RESOK)
+                    return 'http://img.dou.gxnews.com.cn/' + path.split('/')[-2] + '/' + filename + '.mp4'
+                except:
+                    logging.debug(r"{}:执行视频下载失败".format(url))
+                    mongo.update(url, COD.VIDEOERR)
+                    raise Exception("{}:执行视频下载失败".format(url))
+                # ffmpeg -i /Users/lihao/Desktop/asd.flv -acodec copy -vcodec copy -f flv /Users/lihao/Desktop/asd.mp4
+
+        logging.debug(r"{}:视频地址为空".format(url))
         mongo.update(url, COD.VIDEOERR)
-        raise AssertionError(r'下载视频失败')
+        raise AssertionError(r'{}:下载视频失败'.format(url))
 
     return video_local_files
 
 
 def files_upload(thumbnail_local_files, video_local_files, url, mongo):
     # 上传缩略图
-    logging.debug(r'开始上传缩略图')
+    logging.debug(r'{}:开始上传缩略图'.format(url))
     uploads = UploadsFiles(thumbnail_local_files)
     f = uploads.uploads()
     if f:
-        logging.debug(r'上传缩略图成功')
+        logging.debug(r'{}:上传缩略图成功'.format(url))
         mongo.update(url, COD.GETUPIMG)
     else:
-        logging.debug(r'上传缩略图失败')
+        logging.debug(r'{}:上传缩略图失败'.format(url))
         mongo.update(url, COD.UPLOADERR)
-        raise AssertionError(r'上传缩略图失败')
+        raise AssertionError(r'{}:上传缩略图失败'.format(url))
 
     # 上传视频
-    logging.debug(r'开始上传视频')
+    logging.debug(r'{}:开始上传视频'.format(url))
     uploads = UploadsFiles([video_local_files])
     f = uploads.uploads()
     if f:
-        logging.debug(r'上传视频成功')
+        logging.debug(r'{}:上传视频成功'.format(url))
         mongo.update(url, COD.GETUPVIDEO)
     else:
-        logging.debug(r'上传视频失败')
+        logging.debug(r'{}:上传视频失败'.format(url))
         mongo.update(url, COD.UPLOADERR)
-        raise AssertionError(r'上传视频失败')
+        raise AssertionError(r'{}:上传视频失败'.format(url))
 
 
 def post_data(url, category, k, data, thumbnail_local_files, video_local_files):
-    logging.debug('生成用来发布的json文件')
+    logging.debug('{}:生成用来发布的json文件'.format(url))
     writer = k     # 发布作者
     content = '<video src="{}" controls="controls" autoplay="autoplay" width="100%">' \
                    '您的浏览器不支持 video 标签。</video>'.format(video_local_files)
@@ -227,18 +303,19 @@ def post_api(pyload, url, mongo, thumbnail_local_files, video_local_files):
     if re.search(r'增加信息成功', r.text):
         logging.debug('增加信息成功')
         mongo.update(url, COD.OK)
+        mongo.complite(url)
         return '{"result": "增加信息成功"}'
     else:
         logging.debug('执行文件删除')
         ftp = ftplib.FTP()
-        ftp.connect('47.98.221.90', 21)
-        ftp.login('ftpnews', 'video293840')
+        ftp.connect(FTP_HOST, FTP_PORT)
+        ftp.login(FTP_USER, FTP_PASSWORD)
         paths = datetime.datetime.now().strftime('%Y%m%d')
         serverPath = '/' + paths
         try:
             ftp.cwd(serverPath)
         except ftplib.error_perm:
-            logging.debug('WRANING: 切换目录失败')
+            logging.debug('{}:WRANING: 切换目录失败'.format(url))
             return
         for img in thumbnail_local_files:
             try:
@@ -256,11 +333,11 @@ def post_api(pyload, url, mongo, thumbnail_local_files, video_local_files):
         ftp.quit()
         logging.debug('执行成功\n')
         if re.search(r'标题重复,增加不成功!', r.text):
-            logging.debug('标题重复,增加不成功!')
+            logging.debug('{}:标题重复,增加不成功!'.format(url))
             mongo.update(url, COD.EXISTS)
             raise AssertionError(r'标题重复,增加不成功!')
         if re.search(r'您没有增加信息的权限', r.text):
-            logging.debug('您没有增加信息的权限')
+            logging.debug('{}:您没有增加信息的权限'.format(url))
             mongo.update(url, COD.LIMIST)
             raise AssertionError(r"您没有增加信息的权限")
 

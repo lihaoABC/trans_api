@@ -28,8 +28,8 @@ def transfer():
     url = request.form.get("url")
     category = request.form.get("category")
     try:
-        main.delay(url, category)
-        # main(url, category)
+        # main.delay(url, category)
+        main(url, category)
     except AssertionError as e:
         return jsonify({'error': e.__str__()})
 

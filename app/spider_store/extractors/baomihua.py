@@ -33,7 +33,7 @@ def baomihua_download_by_id(
     vid = match1(html, r'&stream_name=([^&]*)')
     assert vid
     dir_str = match1(html, r'&dir=([^&]*)').strip()
-    url = 'http://{}/{}/{}.{}'.format(host, dir_str, vid, _type)
+    video_url = 'http://{}/{}/{}.{}'.format(host, dir_str, vid, _type)
     logging.debug("url is {}".format(url))
     if title is None:
         title = match1(html, r'&title=([^&]*)')
@@ -49,13 +49,12 @@ def baomihua_download_by_id(
     data = {
         "title": title,
         "source": source,
-        "thumbnail_urls": img_url,
-        "video_url": url,
+        "thumbnail_urls": [img_url],
+        "video_url": video_url,
         "ext": ext,
         "size": size,
         "output_dir": output_dir,
     }
-    logging.debug('_data is {}'.format(data))
     # if not info_only:
     #     video_path = download_urls(
     #         [url], ext, size, output_dir, merge=merge, **kwargs

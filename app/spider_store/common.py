@@ -166,54 +166,55 @@ def get_output_name():
     return datetime.datetime.now().strftime('%Y%m%d%H%M%S%f') + 'a'
 
 
-def img_download(image_url):
+def img_download(image_urls):
     """
     图片下载
     :param image_url: 图片连接
     :return: 上传后的地址列表
     """
-    assert image_url, "图片地址为空"
+    assert image_urls, "图片地址为空"
     new_image_url = []
     # 未能正确获得网页 就进行异常处理
     # res = None
-    logging.debug('开始下载: {}'.format(image_url))
+    for image_url in image_urls:
+        logging.debug('开始下载: {}'.format(image_url))
 
-    if cookies:
-        session.cookies = cookies
+        if cookies:
+            session.cookies = cookies
 
-    response = urlopen_with_retry(image_url, headers=POST_HEADERS, timeout=(5, 15))
-    data = response.content
+        response = urlopen_with_retry(image_url, headers=POST_HEADERS, timeout=(5, 15))
+        data = response.content
 
-    img_name = get_output_name()
-    image_path = get_output_dir()
-    filename = os.path.join(image_path + img_name + '.jpg')
-    if re.search(r'gif', image_url):
-        filename = os.path.join(image_path + img_name + '.gif')
+        img_name = get_output_name()
+        image_path = get_output_dir()
+        filename = os.path.join(image_path + img_name + '.jpg')
+        if re.search(r'gif', image_url):
+            filename = os.path.join(image_path + img_name + '.gif')
 
-    if not os.path.isdir(os.path.dirname(filename)):
-        os.makedirs(os.path.dirname(filename))
-    try:
-        if data == b'' or None or '':
-            logging.debug('内容为空，不执行保存')
+        if not os.path.isdir(os.path.dirname(filename)):
+            os.makedirs(os.path.dirname(filename))
+        try:
+            if data == b'' or None or '':
+                logging.debug('内容为空，不执行保存')
+                return None
+            else:
+                with open(filename, 'wb') as f:
+                    f.write(data)
+                    logging.debug('下载完成\n')
+        except:
+            logging.debug('下载失败\n')
             return None
+
+        # webp格式转换jpg
+        if re.search(r'webp', image_url):
+            change_jpg(filename, filename)
+
+        time.sleep(random.random())
+        path = datetime.datetime.now().strftime('%Y%m%d') + '/'
+        if re.search(r'gif', image_url):
+            new_image_url.append(POST_HOST + path + img_name + '.gif')  # 传入上传成功的路径
         else:
-            with open(filename, 'wb') as f:
-                f.write(data)
-                logging.debug('下载完成\n')
-    except:
-        logging.debug('下载失败\n')
-        return None
-
-    # webp格式转换jpg
-    if re.search(r'webp', image_url):
-        change_jpg(filename, filename)
-
-    time.sleep(random.random())
-    path = datetime.datetime.now().strftime('%Y%m%d') + '/'
-    if re.search(r'gif', image_url):
-        new_image_url.append(POST_HOST + path + img_name + '.gif')  # 传入上传成功的路径
-    else:
-        new_image_url.append(POST_HOST + path + img_name + '.jpg')  # 传入上传成功的路径
+            new_image_url.append(POST_HOST + path + img_name + '.jpg')  # 传入上传成功的路径
 
     return new_image_url
 
@@ -645,8 +646,8 @@ def url_save(
 
         if os.path.exists(temp_filepath):
             received += os.path.getsize(temp_filepath)
-            if bar:
-                bar.update_received(os.path.getsize(temp_filepath))
+            # if bar:
+            #     bar.update_received(os.path.getsize(temp_filepath))
     else:
         open_mode = 'wb'
 
@@ -678,8 +679,8 @@ def url_save(
 
         if file_size != received + range_length:
             received = 0
-            if bar:
-                bar.received = 0
+            # if bar:
+            #     bar.received = 0
             open_mode = 'wb'
 
         with open(temp_filepath, open_mode) as output:
@@ -687,8 +688,8 @@ def url_save(
                 if chunk:
                     output.write(chunk)
                     received += len(chunk)
-                    if bar:
-                        bar.update_received(len(chunk))
+                    # if bar:
+                    #     bar.update_received(len(chunk))
 
     assert received == os.path.getsize(temp_filepath), '{} == {} == {}'.format(
         received, os.path.getsize(temp_filepath), temp_filepath

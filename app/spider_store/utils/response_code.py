@@ -17,12 +17,19 @@ class COD:
     SAND                = "12"
     EXISTS              = "13"
     LIMIST              = "14"
+    RESET               = "15"
+    RESOK               = "16"
 
 
     NODATA              = "4003"
     IMGERR              = "4005"
+    IMGNIL              = "4006"
     VIDEOERR            = "4007"
     UPLOADERR           = "4009"
+
+    URLEX               = "4011"
+    URLES               = "4013"
+
 
 
 message_map = {
@@ -45,8 +52,18 @@ message_map = {
 
     COD.NODATA                  : r"获取视频信息失败",
     COD.IMGERR                  : r"下载缩略图失败",
+    COD.IMGNIL                  : r"缩略图地址为空",
     COD.VIDEOERR                : r"下载视频失败",
     COD.UPLOADERR               : r"上传文件失败",
+
+    COD.URLEX                   : r"此url重复",
+    COD.URLES                   : r"不支持此url",
+
+    COD.RESET                   : r"视频正在转码",
+    COD.RESOK                   : r"视频转码成功",
+
+
+
 }
 
 

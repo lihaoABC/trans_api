@@ -13,6 +13,12 @@ REDIS_CONFIG = {
 MONGO_HOST = "127.0.0.1"
 MONGO_PORT = 27017
 
+# ftp仓库
+FTP_HOST = '47.98.221.90'
+FTP_PORT = 21
+FTP_USER = 'ftpnews'
+FTP_PASSWORD = 'video293840'
+
 # fake_headers
 FAKE_HEADERS = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',  # noqa
@@ -48,6 +54,7 @@ POST_HEADERS = {
 SITES = {
     "baomihua"              : "baomihua",
     'ifeng'                 : 'ifeng',
+    'bilibili'              : 'bilibili',
 
 }
 
