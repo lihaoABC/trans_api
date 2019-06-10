@@ -12,12 +12,13 @@ class MongoWare(object):
         self.db = self.client.URLMsg          # 声明数据库
         self.collection = self.db.urlInfo     # 声明集合
 
-    def info(self, url, message, title=None):
+    def info(self, url, message, username=None, title=None):
         return {
             "url": url,
             "message": message,
             "tid": datetime.datetime.now().strftime('%Y%m%d%H%M%S%f'),
             "title": title,
+            "username": username,
             "block": False
         }
 
@@ -42,8 +43,17 @@ class MongoWare(object):
         返回
         :return: 前十条数据(可迭代对象mongo.Cursor.cursor)
         """
-        # results = self.collection.find().sort('dateId', pymongo.ASCENDING).limit(10)
         return self.collection.find().sort('tid', pymongo.DESCENDING).limit(20)
+
+    def find_by_name(self, name=None):
+        """
+        返回
+        :return: 指定username的前十条数据(可迭代对象mongo.Cursor.cursor)
+        """
+        if name is None:
+            return self.collection.find().sort('tid', pymongo.DESCENDING).limit(20)
+        else:
+            return self.collection.find({"username": name}).sort('tid', pymongo.DESCENDING).limit(20)
 
     def complite(self, url):
         """
@@ -86,21 +96,17 @@ class MongoWare(object):
 
 if __name__ == '__main__':
 
-    # message = {
-    #     "url": "www.baidu.com",
-    #     "message": "爬虫开始运行",
-    #     "dateId": datetime.datetime.now().strftime('%Y%m%d%H%M%S%f')
-    # }
     mg = MongoWare()
     # info = mg.info("www.fef.com", "14",)
-    # mg.insert(info)
+    # mg.insert(inf/o)
     # info = mg.update("www.baidu.com", "爬虫结束", 'aaa')
     # print(info)
     # 删除
-    mg.deleteOne('https://www.bilibili.com/video/av46913509')
+    mg.deleteOne('https://money.163.com/19/0603/14/EGOKEDRE00258152.html')
     # mg._deleteMany('99999999999999999999')
-    results = mg.find()
-    for res in results:
-        print(res)
+    # results = mg.find()
+    # results = mg.find_by_name()
+    # for res in results:
+    #     print(res)
     # print(mg._exists('www.baidu.com'))
 

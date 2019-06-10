@@ -1,0 +1,507 @@
+WARNING _internal.py:88  * Debugger is active!
+INFO _internal.py:88  * Debugger PIN: 360-911-915
+INFO _internal.py:88  * Detected change in '/Users/lihao/Public/文档/PythonCode/trans_api/app/spider_store/crawler.py', reloading
+WARNING _internal.py:88  * Debugger is active!
+INFO _internal.py:88  * Debugger PIN: 360-911-915
+INFO _internal.py:88  * Detected change in '/Users/lihao/Public/文档/PythonCode/trans_api/app/spider_store/crawler.py', reloading
+WARNING _internal.py:88  * Debugger is active!
+INFO _internal.py:88  * Debugger PIN: 360-911-915
+INFO _internal.py:88  * Detected change in '/Users/lihao/Public/文档/PythonCode/trans_api/app/spider_store/crawler.py', reloading
+WARNING _internal.py:88  * Debugger is active!
+INFO _internal.py:88  * Debugger PIN: 360-911-915
+DEBUG crawler.py:32 sh.qihoo.com
+DEBUG crawler.py:34 /9ffc913743eaaed9e?refer_scene=&scene=1&sign=look&tj_url=932e7084f205ef16e&uid=18ee33b568a5c7b688601fa9a8c51cf2
+DEBUG crawler.py:60 site is qihoo
+DEBUG crawler.py:88 开始获取文章信息
+DEBUG crawler.py:91 params is <module 'app.spider_store.extractors.kuaizixun' from '/Users/lihao/Public/文档/PythonCode/trans_api/app/spider_store/extractors/kuaizixun.py'>
+DEBUG common.py:534 get_content: https://sh.qihoo.com/9ffc913743eaaed9e
+DEBUG connectionpool.py:824 Starting new HTTPS connection (1): sh.qihoo.com
+DEBUG connectionpool.py:396 https://sh.qihoo.com:443 "GET /9ffc913743eaaed9e HTTP/1.1" 200 None
+DEBUG crawler.py:122 开始下载缩略图: ['https://p0.ssl.qhimgs4.com/t01b01bfa5ba45c2461.jpg']
+DEBUG common.py:90 开始下载: https://p0.ssl.qhimgs4.com/t01b01bfa5ba45c2461.jpg
+DEBUG common.py:630 get_head: https://p0.ssl.qhimgs4.com/t01b01bfa5ba45c2461.jpg
+DEBUG connectionpool.py:824 Starting new HTTPS connection (1): p0.ssl.qhimgs4.com
+DEBUG connectionpool.py:396 https://p0.ssl.qhimgs4.com:443 "HEAD /t01b01bfa5ba45c2461.jpg HTTP/1.1" 200 0
+DEBUG connectionpool.py:824 Starting new HTTPS connection (1): p0.ssl.qhimgs4.com
+DEBUG connectionpool.py:396 https://p0.ssl.qhimgs4.com:443 "GET /t01b01bfa5ba45c2461.jpg HTTP/1.1" 200 7721
+DEBUG common.py:145 下载完成
+
+DEBUG common.py:166 uploads:['http://img.dou.gxnews.com.cn/20190604/20190604211701195183a.jpeg']
+DEBUG crawler.py:134 下载缩略图成功
+DEBUG crawler.py:150 开始下载图片: ['https://p0.ssl.qhimgs4.com/t01b01bfa5ba45c2461.jpg', 'https://p0.ssl.qhimgs4.com/t0165cdd67b4ae0c237.jpg', 'https://p0.ssl.qhimgs4.com/t0186db395bb3e624cb.jpg']
+DEBUG common.py:90 开始下载: https://p0.ssl.qhimgs4.com/t01b01bfa5ba45c2461.jpg
+DEBUG common.py:630 get_head: https://p0.ssl.qhimgs4.com/t01b01bfa5ba45c2461.jpg
+DEBUG connectionpool.py:396 https://p0.ssl.qhimgs4.com:443 "HEAD /t01b01bfa5ba45c2461.jpg HTTP/1.1" 200 0
+DEBUG connectionpool.py:824 Starting new HTTPS connection (1): p0.ssl.qhimgs4.com
+DEBUG connectionpool.py:396 https://p0.ssl.qhimgs4.com:443 "GET /t01b01bfa5ba45c2461.jpg HTTP/1.1" 200 7721
+DEBUG common.py:145 下载完成
+
+DEBUG common.py:90 开始下载: https://p0.ssl.qhimgs4.com/t0165cdd67b4ae0c237.jpg
+DEBUG common.py:630 get_head: https://p0.ssl.qhimgs4.com/t0165cdd67b4ae0c237.jpg
+DEBUG connectionpool.py:396 https://p0.ssl.qhimgs4.com:443 "HEAD /t0165cdd67b4ae0c237.jpg HTTP/1.1" 200 0
+DEBUG connectionpool.py:824 Starting new HTTPS connection (1): p0.ssl.qhimgs4.com
+DEBUG connectionpool.py:396 https://p0.ssl.qhimgs4.com:443 "GET /t0165cdd67b4ae0c237.jpg HTTP/1.1" 200 28811
+DEBUG common.py:145 下载完成
+
+DEBUG common.py:90 开始下载: https://p0.ssl.qhimgs4.com/t0186db395bb3e624cb.jpg
+DEBUG common.py:630 get_head: https://p0.ssl.qhimgs4.com/t0186db395bb3e624cb.jpg
+DEBUG connectionpool.py:396 https://p0.ssl.qhimgs4.com:443 "HEAD /t0186db395bb3e624cb.jpg HTTP/1.1" 200 0
+DEBUG connectionpool.py:824 Starting new HTTPS connection (1): p0.ssl.qhimgs4.com
+DEBUG connectionpool.py:396 https://p0.ssl.qhimgs4.com:443 "GET /t0186db395bb3e624cb.jpg HTTP/1.1" 200 31480
+DEBUG common.py:145 下载完成
+
+DEBUG common.py:166 uploads:['http://img.dou.gxnews.com.cn/20190604/20190604211701858631a.jpeg', 'http://img.dou.gxnews.com.cn/20190604/20190604211703343684a.jpeg', 'http://img.dou.gxnews.com.cn/20190604/20190604211704582046a.jpeg']
+DEBUG crawler.py:162 下载图片成功
+DEBUG crawler.py:218 https://sh.qihoo.com/9ffc913743eaaed9e:开始上传缩略图
+DEBUG ftp_client.py:38 login success
+DEBUG ftp_client.py:53 upload 20190604211701195183a.jpeg success
+DEBUG crawler.py:222 https://sh.qihoo.com/9ffc913743eaaed9e:上传缩略图成功
+DEBUG crawler.py:243 https://sh.qihoo.com/9ffc913743eaaed9e:开始上传图片
+DEBUG ftp_client.py:38 login success
+DEBUG ftp_client.py:53 upload 20190604211701858631a.jpeg success
+DEBUG ftp_client.py:53 upload 20190604211703343684a.jpeg success
+DEBUG ftp_client.py:53 upload 20190604211704582046a.jpeg success
+DEBUG crawler.py:247 https://sh.qihoo.com/9ffc913743eaaed9e:上传图片成功
+DEBUG crawler.py:258 https://sh.qihoo.com/9ffc913743eaaed9e:生成用来发布的json文本
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): pcff.dou.gxnews.com.cn
+DEBUG connectionpool.py:396 http://pcff.dou.gxnews.com.cn:80 "POST /e/admin-92game/ecmsdo.php HTTP/1.1" 200 676
+DEBUG crawler.py:361 https://sh.qihoo.com/9ffc913743eaaed9e:已发送
+DEBUG crawler.py:370 https://sh.qihoo.com/9ffc913743eaaed9e:标题重复,增加不成功!
+INFO _internal.py:88 127.0.0.1 - - [04/Jun/2019 21:17:10] "POST /transfer HTTP/1.1" 500 -
+INFO _internal.py:88 127.0.0.1 - - [04/Jun/2019 21:17:51] "GET /show HTTP/1.1" 200 -
+INFO _internal.py:88 127.0.0.1 - - [04/Jun/2019 21:30:58] "GET /support HTTP/1.1" 200 -
+INFO _internal.py:88 127.0.0.1 - - [04/Jun/2019 21:31:00] "GET /static/moban3694/fonts/orion-font.woff2 HTTP/1.1" 404 -
+DEBUG crawler.py:32 mil.news.sina.com.cn
+DEBUG crawler.py:34 /jssd/2019-06-04/doc-ihvhiews6763132.shtml
+DEBUG crawler.py:60 site is sina
+INFO _internal.py:88 127.0.0.1 - - [04/Jun/2019 22:07:05] "POST /transfer HTTP/1.1" 500 -
+INFO _internal.py:88  * Detected change in '/Users/lihao/Public/文档/PythonCode/trans_api/app/modules/index/views.py', reloading
+WARNING _internal.py:88  * Debugger is active!
+INFO _internal.py:88  * Debugger PIN: 360-911-915
+INFO _internal.py:88 127.0.0.1 - - [04/Jun/2019 22:20:53] "POST /transfer HTTP/1.1" 200 -
+INFO _internal.py:88 127.0.0.1 - - [04/Jun/2019 22:39:05] "GET /support2 HTTP/1.1" 200 -
+INFO _internal.py:88 127.0.0.1 - - [04/Jun/2019 22:39:05] "GET /static/moban3694/fonts/orion-font.woff2 HTTP/1.1" 404 -
+INFO _internal.py:88 127.0.0.1 - - [05/Jun/2019 10:10:12] "POST /transfer HTTP/1.1" 200 -
+INFO _internal.py:88  * Detected change in '/Users/lihao/Public/文档/PythonCode/trans_api/app/modules/index/views.py', reloading
+WARNING _internal.py:88  * Debugger is active!
+INFO _internal.py:88  * Debugger PIN: 360-911-915
+DEBUG crawler.py:32 news.163.com
+DEBUG crawler.py:34 /19/0604/21/EGRTV6P80001875N.html
+DEBUG crawler.py:60 site is 163
+DEBUG crawler.py:88 开始获取文章信息
+DEBUG crawler.py:91 params is <module 'app.spider_store.extractors.wangyi' from '/Users/lihao/Public/文档/PythonCode/trans_api/app/spider_store/extractors/wangyi.py'>
+DEBUG common.py:534 get_content: https://news.163.com/19/0604/21/EGRTV6P80001875N.html
+DEBUG connectionpool.py:824 Starting new HTTPS connection (1): news.163.com
+DEBUG connectionpool.py:396 https://news.163.com:443 "GET /19/0604/21/EGRTV6P80001875N.html HTTP/1.1" 200 None
+DEBUG crawler.py:122 开始下载缩略图: ['http://cms-bucket.ws.126.net/2019/06/04/13a34a5d649942a88bce4c011d63e735.jpeg?imageView&amp;thumbnail=550x0']
+DEBUG common.py:90 开始下载: http://cms-bucket.ws.126.net/2019/06/04/13a34a5d649942a88bce4c011d63e735.jpeg?imageView&amp;thumbnail=550x0
+DEBUG common.py:630 get_head: http://cms-bucket.ws.126.net/2019/06/04/13a34a5d649942a88bce4c011d63e735.jpeg?imageView&amp;thumbnail=550x0
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): cms-bucket.ws.126.net
+DEBUG connectionpool.py:396 http://cms-bucket.ws.126.net:80 "HEAD /2019/06/04/13a34a5d649942a88bce4c011d63e735.jpeg?imageView&amp;thumbnail=550x0 HTTP/1.1" 200 0
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): cms-bucket.ws.126.net
+DEBUG connectionpool.py:396 http://cms-bucket.ws.126.net:80 "GET /2019/06/04/13a34a5d649942a88bce4c011d63e735.jpeg?imageView&amp;thumbnail=550x0 HTTP/1.1" 200 41198
+DEBUG common.py:145 下载完成
+
+DEBUG common.py:166 uploads:['http://img.dou.gxnews.com.cn/20190605/20190605101113103749a.jpeg']
+DEBUG crawler.py:134 下载缩略图成功
+DEBUG crawler.py:150 开始下载图片: ['http://cms-bucket.ws.126.net/2019/06/04/13a34a5d649942a88bce4c011d63e735.jpeg?imageView&amp;thumbnail=550x0']
+DEBUG common.py:90 开始下载: http://cms-bucket.ws.126.net/2019/06/04/13a34a5d649942a88bce4c011d63e735.jpeg?imageView&amp;thumbnail=550x0
+DEBUG common.py:630 get_head: http://cms-bucket.ws.126.net/2019/06/04/13a34a5d649942a88bce4c011d63e735.jpeg?imageView&amp;thumbnail=550x0
+DEBUG connectionpool.py:396 http://cms-bucket.ws.126.net:80 "HEAD /2019/06/04/13a34a5d649942a88bce4c011d63e735.jpeg?imageView&amp;thumbnail=550x0 HTTP/1.1" 200 0
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): cms-bucket.ws.126.net
+DEBUG connectionpool.py:396 http://cms-bucket.ws.126.net:80 "GET /2019/06/04/13a34a5d649942a88bce4c011d63e735.jpeg?imageView&amp;thumbnail=550x0 HTTP/1.1" 200 41198
+DEBUG common.py:145 下载完成
+
+DEBUG common.py:166 uploads:['http://img.dou.gxnews.com.cn/20190605/20190605101114930183a.jpeg']
+DEBUG crawler.py:162 下载图片成功
+DEBUG crawler.py:218 https://news.163.com/19/0604/21/EGRTV6P80001875N.html:开始上传缩略图
+DEBUG ftp_client.py:38 login success
+DEBUG ftp_client.py:53 upload 20190605101113103749a.jpeg success
+DEBUG crawler.py:222 https://news.163.com/19/0604/21/EGRTV6P80001875N.html:上传缩略图成功
+DEBUG crawler.py:243 https://news.163.com/19/0604/21/EGRTV6P80001875N.html:开始上传图片
+DEBUG ftp_client.py:38 login success
+DEBUG ftp_client.py:53 upload 20190605101114930183a.jpeg success
+DEBUG crawler.py:247 https://news.163.com/19/0604/21/EGRTV6P80001875N.html:上传图片成功
+DEBUG crawler.py:258 https://news.163.com/19/0604/21/EGRTV6P80001875N.html:生成用来发布的json文本
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): pcff.dou.gxnews.com.cn
+DEBUG connectionpool.py:396 http://pcff.dou.gxnews.com.cn:80 "POST /e/admin-92game/ecmsdo.php HTTP/1.1" 200 676
+DEBUG crawler.py:361 https://news.163.com/19/0604/21/EGRTV6P80001875N.html:已发送
+DEBUG crawler.py:370 https://news.163.com/19/0604/21/EGRTV6P80001875N.html:标题重复,增加不成功!
+INFO _internal.py:88 127.0.0.1 - - [05/Jun/2019 10:11:16] "POST /transfer HTTP/1.1" 500 -
+DEBUG crawler.py:32 kan.china.com
+DEBUG crawler.py:34 /qd/sogou2/article/583220.html
+DEBUG crawler.py:60 site is china
+DEBUG crawler.py:88 开始获取文章信息
+DEBUG crawler.py:91 params is <module 'app.spider_store.extractors.zhonghua' from '/Users/lihao/Public/文档/PythonCode/trans_api/app/spider_store/extractors/zhonghua.py'>
+DEBUG common.py:534 get_content: https://kan.china.com/qd/sogou2/article/583220.html
+DEBUG connectionpool.py:824 Starting new HTTPS connection (1): kan.china.com
+DEBUG connectionpool.py:396 https://kan.china.com:443 "GET /qd/sogou2/article/583220.html HTTP/1.1" 200 None
+DEBUG common.py:534 get_content: https://kan.china.com/qd/sogou2/article/583220_2.html
+DEBUG connectionpool.py:824 Starting new HTTPS connection (1): kan.china.com
+DEBUG connectionpool.py:396 https://kan.china.com:443 "GET /qd/sogou2/article/583220_2.html HTTP/1.1" 200 None
+DEBUG zhonghua.py:49 清洗完成
+DEBUG crawler.py:122 开始下载缩略图: ['http://kan.china.com/uploads/allimg/190604/28-1Z604142200.jpg']
+DEBUG common.py:90 开始下载: http://kan.china.com/uploads/allimg/190604/28-1Z604142200.jpg
+DEBUG common.py:630 get_head: http://kan.china.com/uploads/allimg/190604/28-1Z604142200.jpg
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): kan.china.com
+DEBUG connectionpool.py:396 http://kan.china.com:80 "HEAD /uploads/allimg/190604/28-1Z604142200.jpg HTTP/1.1" 301 0
+DEBUG connectionpool.py:396 http://kan.china.com:80 "GET /uploads/allimg/190604/28-1Z604142200.jpg HTTP/1.1" 301 278
+DEBUG connectionpool.py:824 Starting new HTTPS connection (1): kan.china.com
+DEBUG connectionpool.py:396 https://kan.china.com:443 "GET /uploads/allimg/190604/28-1Z604142200.jpg HTTP/1.1" 200 39513
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): kan.china.com
+DEBUG connectionpool.py:396 http://kan.china.com:80 "GET /uploads/allimg/190604/28-1Z604142200.jpg HTTP/1.1" 301 278
+DEBUG connectionpool.py:824 Starting new HTTPS connection (1): kan.china.com
+DEBUG connectionpool.py:396 https://kan.china.com:443 "GET /uploads/allimg/190604/28-1Z604142200.jpg HTTP/1.1" 200 39513
+DEBUG common.py:145 下载完成
+
+DEBUG common.py:166 uploads:['http://img.dou.gxnews.com.cn/20190605/20190605101154190675a.jpeg']
+DEBUG crawler.py:134 下载缩略图成功
+DEBUG crawler.py:150 开始下载图片: ['http://kan.china.com/uploads/allimg/190604/28-1Z604142200.jpg', 'http://kan.china.com/uploads/allimg/190604/28-1Z604142201.jpg', 'http://kan.china.com/uploads/allimg/190604/28-1Z604142240.jpg', 'http://kan.china.com/uploads/allimg/190604/28-1Z604142240-50.jpg']
+DEBUG common.py:90 开始下载: http://kan.china.com/uploads/allimg/190604/28-1Z604142200.jpg
+DEBUG common.py:630 get_head: http://kan.china.com/uploads/allimg/190604/28-1Z604142200.jpg
+DEBUG connectionpool.py:396 http://kan.china.com:80 "HEAD /uploads/allimg/190604/28-1Z604142200.jpg HTTP/1.1" 301 0
+DEBUG connectionpool.py:396 http://kan.china.com:80 "GET /uploads/allimg/190604/28-1Z604142200.jpg HTTP/1.1" 301 278
+DEBUG connectionpool.py:396 https://kan.china.com:443 "GET /uploads/allimg/190604/28-1Z604142200.jpg HTTP/1.1" 200 39513
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): kan.china.com
+DEBUG connectionpool.py:396 http://kan.china.com:80 "GET /uploads/allimg/190604/28-1Z604142200.jpg HTTP/1.1" 301 278
+DEBUG connectionpool.py:824 Starting new HTTPS connection (1): kan.china.com
+DEBUG connectionpool.py:396 https://kan.china.com:443 "GET /uploads/allimg/190604/28-1Z604142200.jpg HTTP/1.1" 200 39513
+DEBUG common.py:145 下载完成
+
+DEBUG common.py:90 开始下载: http://kan.china.com/uploads/allimg/190604/28-1Z604142201.jpg
+DEBUG common.py:630 get_head: http://kan.china.com/uploads/allimg/190604/28-1Z604142201.jpg
+DEBUG connectionpool.py:396 http://kan.china.com:80 "HEAD /uploads/allimg/190604/28-1Z604142201.jpg HTTP/1.1" 301 0
+DEBUG connectionpool.py:396 http://kan.china.com:80 "GET /uploads/allimg/190604/28-1Z604142201.jpg HTTP/1.1" 301 278
+DEBUG connectionpool.py:396 https://kan.china.com:443 "GET /uploads/allimg/190604/28-1Z604142201.jpg HTTP/1.1" 200 19129
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): kan.china.com
+DEBUG connectionpool.py:396 http://kan.china.com:80 "GET /uploads/allimg/190604/28-1Z604142201.jpg HTTP/1.1" 301 278
+DEBUG connectionpool.py:824 Starting new HTTPS connection (1): kan.china.com
+DEBUG connectionpool.py:396 https://kan.china.com:443 "GET /uploads/allimg/190604/28-1Z604142201.jpg HTTP/1.1" 200 19129
+DEBUG common.py:145 下载完成
+
+DEBUG common.py:90 开始下载: http://kan.china.com/uploads/allimg/190604/28-1Z604142240.jpg
+DEBUG common.py:630 get_head: http://kan.china.com/uploads/allimg/190604/28-1Z604142240.jpg
+DEBUG connectionpool.py:396 http://kan.china.com:80 "HEAD /uploads/allimg/190604/28-1Z604142240.jpg HTTP/1.1" 301 0
+DEBUG connectionpool.py:396 http://kan.china.com:80 "GET /uploads/allimg/190604/28-1Z604142240.jpg HTTP/1.1" 301 278
+DEBUG connectionpool.py:396 https://kan.china.com:443 "GET /uploads/allimg/190604/28-1Z604142240.jpg HTTP/1.1" 200 28110
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): kan.china.com
+DEBUG connectionpool.py:396 http://kan.china.com:80 "GET /uploads/allimg/190604/28-1Z604142240.jpg HTTP/1.1" 301 278
+DEBUG connectionpool.py:824 Starting new HTTPS connection (1): kan.china.com
+DEBUG connectionpool.py:396 https://kan.china.com:443 "GET /uploads/allimg/190604/28-1Z604142240.jpg HTTP/1.1" 200 28110
+DEBUG common.py:145 下载完成
+
+DEBUG common.py:90 开始下载: http://kan.china.com/uploads/allimg/190604/28-1Z604142240-50.jpg
+DEBUG common.py:630 get_head: http://kan.china.com/uploads/allimg/190604/28-1Z604142240-50.jpg
+DEBUG connectionpool.py:396 http://kan.china.com:80 "HEAD /uploads/allimg/190604/28-1Z604142240-50.jpg HTTP/1.1" 301 0
+DEBUG connectionpool.py:396 http://kan.china.com:80 "GET /uploads/allimg/190604/28-1Z604142240-50.jpg HTTP/1.1" 301 278
+DEBUG connectionpool.py:396 https://kan.china.com:443 "GET /uploads/allimg/190604/28-1Z604142240-50.jpg HTTP/1.1" 200 44620
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): kan.china.com
+DEBUG connectionpool.py:396 http://kan.china.com:80 "GET /uploads/allimg/190604/28-1Z604142240-50.jpg HTTP/1.1" 301 278
+DEBUG connectionpool.py:824 Starting new HTTPS connection (1): kan.china.com
+DEBUG connectionpool.py:396 https://kan.china.com:443 "GET /uploads/allimg/190604/28-1Z604142240-50.jpg HTTP/1.1" 200 44620
+DEBUG common.py:145 下载完成
+
+DEBUG common.py:166 uploads:['http://img.dou.gxnews.com.cn/20190605/20190605101154692260a.jpeg', 'http://img.dou.gxnews.com.cn/20190605/20190605101156315275a.jpeg', 'http://img.dou.gxnews.com.cn/20190605/20190605101157889543a.jpeg', 'http://img.dou.gxnews.com.cn/20190605/20190605101159663569a.jpeg']
+DEBUG crawler.py:162 下载图片成功
+DEBUG crawler.py:218 https://kan.china.com/qd/sogou2/article/583220.html:开始上传缩略图
+DEBUG ftp_client.py:38 login success
+DEBUG ftp_client.py:53 upload 20190605101154190675a.jpeg success
+DEBUG crawler.py:222 https://kan.china.com/qd/sogou2/article/583220.html:上传缩略图成功
+DEBUG crawler.py:243 https://kan.china.com/qd/sogou2/article/583220.html:开始上传图片
+DEBUG ftp_client.py:38 login success
+DEBUG ftp_client.py:53 upload 20190605101154692260a.jpeg success
+DEBUG ftp_client.py:53 upload 20190605101156315275a.jpeg success
+DEBUG ftp_client.py:53 upload 20190605101157889543a.jpeg success
+DEBUG ftp_client.py:53 upload 20190605101159663569a.jpeg success
+DEBUG crawler.py:247 https://kan.china.com/qd/sogou2/article/583220.html:上传图片成功
+DEBUG crawler.py:258 https://kan.china.com/qd/sogou2/article/583220.html:生成用来发布的json文本
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): pcff.dou.gxnews.com.cn
+DEBUG connectionpool.py:396 http://pcff.dou.gxnews.com.cn:80 "POST /e/admin-92game/ecmsdo.php HTTP/1.1" 200 741
+DEBUG crawler.py:361 https://kan.china.com/qd/sogou2/article/583220.html:已发送
+DEBUG crawler.py:363 https://kan.china.com/qd/sogou2/article/583220.html:增加信息成功
+INFO _internal.py:88 127.0.0.1 - - [05/Jun/2019 10:12:06] "POST /transfer HTTP/1.1" 200 -
+DEBUG crawler.py:32 mini.eastday.com
+DEBUG crawler.py:34 /a/190531215153423.html?recommendtype=d
+DEBUG crawler.py:60 site is eastday
+DEBUG crawler.py:88 开始获取文章信息
+DEBUG crawler.py:91 params is <module 'app.spider_store.extractors.eastday' from '/Users/lihao/Public/文档/PythonCode/trans_api/app/spider_store/extractors/eastday.py'>
+DEBUG common.py:534 get_content: http://mini.eastday.com/a/190531215153423.html
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): mini.eastday.com
+DEBUG connectionpool.py:396 http://mini.eastday.com:80 "GET /a/190531215153423.html HTTP/1.1" 200 None
+DEBUG common.py:494 get_location: http://mini.eastday.com/a/190531215153423.html
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): mini.eastday.com
+DEBUG connectionpool.py:396 http://mini.eastday.com:80 "GET /a/190531215153423.html HTTP/1.1" 200 None
+DEBUG common.py:534 get_content: http://mini.eastday.com/a/190531215153423-2.html
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): mini.eastday.com
+DEBUG connectionpool.py:396 http://mini.eastday.com:80 "GET /a/190531215153423-2.html HTTP/1.1" 200 None
+DEBUG common.py:494 get_location: http://mini.eastday.com/a/190531215153423-2.html
+DEBUG connectionpool.py:396 http://mini.eastday.com:80 "GET /a/190531215153423-2.html HTTP/1.1" 200 None
+DEBUG common.py:534 get_content: http://mini.eastday.com/a/190531215153423-3.html
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): mini.eastday.com
+DEBUG connectionpool.py:396 http://mini.eastday.com:80 "GET /a/190531215153423-3.html HTTP/1.1" 200 None
+DEBUG common.py:494 get_location: http://mini.eastday.com/a/190531215153423-3.html
+DEBUG connectionpool.py:396 http://mini.eastday.com:80 "GET /a/190531215153423-3.html HTTP/1.1" 200 None
+DEBUG common.py:534 get_content: http://mini.eastday.com/a/190531215153423-4.html
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): mini.eastday.com
+DEBUG connectionpool.py:396 http://mini.eastday.com:80 "GET /a/190531215153423-4.html HTTP/1.1" 200 None
+DEBUG common.py:494 get_location: http://mini.eastday.com/a/190531215153423-4.html
+DEBUG connectionpool.py:396 http://mini.eastday.com:80 "GET /a/190531215153423-4.html HTTP/1.1" 200 None
+DEBUG common.py:534 get_content: http://mini.eastday.com/a/190531215153423-5.html
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): mini.eastday.com
+DEBUG connectionpool.py:396 http://mini.eastday.com:80 "GET /a/190531215153423-5.html HTTP/1.1" 302 0
+DEBUG connectionpool.py:396 http://mini.eastday.com:80 "GET /404.html HTTP/1.1" 200 None
+DEBUG common.py:494 get_location: http://mini.eastday.com/a/190531215153423-5.html
+DEBUG connectionpool.py:396 http://mini.eastday.com:80 "GET /a/190531215153423-5.html HTTP/1.1" 302 0
+DEBUG connectionpool.py:396 http://mini.eastday.com:80 "GET /404.html HTTP/1.1" 200 None
+DEBUG eastday.py:64 清洗完成
+DEBUG crawler.py:122 开始下载缩略图: ['http://08imgmini.eastday.com/mobile/20190531/20190531215153_3999f5fbe612f3d4ab7280cc321ec184_1.gif']
+DEBUG common.py:90 开始下载: http://08imgmini.eastday.com/mobile/20190531/20190531215153_3999f5fbe612f3d4ab7280cc321ec184_1.gif
+DEBUG common.py:630 get_head: http://08imgmini.eastday.com/mobile/20190531/20190531215153_3999f5fbe612f3d4ab7280cc321ec184_1.gif
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): 08imgmini.eastday.com
+DEBUG connectionpool.py:396 http://08imgmini.eastday.com:80 "HEAD /mobile/20190531/20190531215153_3999f5fbe612f3d4ab7280cc321ec184_1.gif HTTP/1.1" 200 0
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): 08imgmini.eastday.com
+DEBUG connectionpool.py:396 http://08imgmini.eastday.com:80 "GET /mobile/20190531/20190531215153_3999f5fbe612f3d4ab7280cc321ec184_1.gif HTTP/1.1" 200 1082986
+DEBUG common.py:145 下载完成
+
+DEBUG common.py:166 uploads:['http://img.dou.gxnews.com.cn/20190605/20190605101925404178a.gif']
+DEBUG crawler.py:134 下载缩略图成功
+DEBUG crawler.py:150 开始下载图片: ['http://08imgmini.eastday.com/mobile/20190531/20190531215153_3999f5fbe612f3d4ab7280cc321ec184_1.gif', 'http://08imgmini.eastday.com/mobile/20190531/20190531215153_3999f5fbe612f3d4ab7280cc321ec184_2.gif', 'http://08imgmini.eastday.com/mobile/20190531/20190531215153_3999f5fbe612f3d4ab7280cc321ec184_3.gif', 'http://08imgmini.eastday.com/mobile/20190531/20190531215153_3999f5fbe612f3d4ab7280cc321ec184_4.gif', 'http://08imgmini.eastday.com/mobile/20190531/20190531215153_3999f5fbe612f3d4ab7280cc321ec184_5.jpeg', 'http://08imgmini.eastday.com/mobile/20190531/20190531215153_3999f5fbe612f3d4ab7280cc321ec184_6.jpeg']
+DEBUG common.py:90 开始下载: http://08imgmini.eastday.com/mobile/20190531/20190531215153_3999f5fbe612f3d4ab7280cc321ec184_1.gif
+DEBUG common.py:630 get_head: http://08imgmini.eastday.com/mobile/20190531/20190531215153_3999f5fbe612f3d4ab7280cc321ec184_1.gif
+DEBUG connectionpool.py:396 http://08imgmini.eastday.com:80 "HEAD /mobile/20190531/20190531215153_3999f5fbe612f3d4ab7280cc321ec184_1.gif HTTP/1.1" 200 0
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): 08imgmini.eastday.com
+DEBUG connectionpool.py:396 http://08imgmini.eastday.com:80 "GET /mobile/20190531/20190531215153_3999f5fbe612f3d4ab7280cc321ec184_1.gif HTTP/1.1" 200 1082986
+DEBUG common.py:145 下载完成
+
+DEBUG common.py:90 开始下载: http://08imgmini.eastday.com/mobile/20190531/20190531215153_3999f5fbe612f3d4ab7280cc321ec184_2.gif
+DEBUG common.py:630 get_head: http://08imgmini.eastday.com/mobile/20190531/20190531215153_3999f5fbe612f3d4ab7280cc321ec184_2.gif
+DEBUG connectionpool.py:396 http://08imgmini.eastday.com:80 "HEAD /mobile/20190531/20190531215153_3999f5fbe612f3d4ab7280cc321ec184_2.gif HTTP/1.1" 200 0
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): 08imgmini.eastday.com
+DEBUG connectionpool.py:396 http://08imgmini.eastday.com:80 "GET /mobile/20190531/20190531215153_3999f5fbe612f3d4ab7280cc321ec184_2.gif HTTP/1.1" 200 1619317
+DEBUG common.py:145 下载完成
+
+DEBUG common.py:90 开始下载: http://08imgmini.eastday.com/mobile/20190531/20190531215153_3999f5fbe612f3d4ab7280cc321ec184_3.gif
+DEBUG common.py:630 get_head: http://08imgmini.eastday.com/mobile/20190531/20190531215153_3999f5fbe612f3d4ab7280cc321ec184_3.gif
+DEBUG connectionpool.py:396 http://08imgmini.eastday.com:80 "HEAD /mobile/20190531/20190531215153_3999f5fbe612f3d4ab7280cc321ec184_3.gif HTTP/1.1" 200 0
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): 08imgmini.eastday.com
+DEBUG connectionpool.py:396 http://08imgmini.eastday.com:80 "GET /mobile/20190531/20190531215153_3999f5fbe612f3d4ab7280cc321ec184_3.gif HTTP/1.1" 200 778277
+DEBUG common.py:145 下载完成
+
+DEBUG common.py:90 开始下载: http://08imgmini.eastday.com/mobile/20190531/20190531215153_3999f5fbe612f3d4ab7280cc321ec184_4.gif
+DEBUG common.py:630 get_head: http://08imgmini.eastday.com/mobile/20190531/20190531215153_3999f5fbe612f3d4ab7280cc321ec184_4.gif
+DEBUG connectionpool.py:396 http://08imgmini.eastday.com:80 "HEAD /mobile/20190531/20190531215153_3999f5fbe612f3d4ab7280cc321ec184_4.gif HTTP/1.1" 200 0
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): 08imgmini.eastday.com
+DEBUG connectionpool.py:396 http://08imgmini.eastday.com:80 "GET /mobile/20190531/20190531215153_3999f5fbe612f3d4ab7280cc321ec184_4.gif HTTP/1.1" 200 575548
+DEBUG common.py:145 下载完成
+
+DEBUG common.py:90 开始下载: http://08imgmini.eastday.com/mobile/20190531/20190531215153_3999f5fbe612f3d4ab7280cc321ec184_5.jpeg
+DEBUG common.py:630 get_head: http://08imgmini.eastday.com/mobile/20190531/20190531215153_3999f5fbe612f3d4ab7280cc321ec184_5.jpeg
+DEBUG connectionpool.py:396 http://08imgmini.eastday.com:80 "HEAD /mobile/20190531/20190531215153_3999f5fbe612f3d4ab7280cc321ec184_5.jpeg HTTP/1.1" 200 0
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): 08imgmini.eastday.com
+DEBUG connectionpool.py:396 http://08imgmini.eastday.com:80 "GET /mobile/20190531/20190531215153_3999f5fbe612f3d4ab7280cc321ec184_5.jpeg HTTP/1.1" 200 32192
+DEBUG common.py:145 下载完成
+
+DEBUG common.py:90 开始下载: http://08imgmini.eastday.com/mobile/20190531/20190531215153_3999f5fbe612f3d4ab7280cc321ec184_6.jpeg
+DEBUG common.py:630 get_head: http://08imgmini.eastday.com/mobile/20190531/20190531215153_3999f5fbe612f3d4ab7280cc321ec184_6.jpeg
+DEBUG connectionpool.py:396 http://08imgmini.eastday.com:80 "HEAD /mobile/20190531/20190531215153_3999f5fbe612f3d4ab7280cc321ec184_6.jpeg HTTP/1.1" 200 0
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): 08imgmini.eastday.com
+DEBUG connectionpool.py:396 http://08imgmini.eastday.com:80 "GET /mobile/20190531/20190531215153_3999f5fbe612f3d4ab7280cc321ec184_6.jpeg HTTP/1.1" 200 22415
+DEBUG common.py:145 下载完成
+
+DEBUG common.py:166 uploads:['http://img.dou.gxnews.com.cn/20190605/20190605101926549496a.gif', 'http://img.dou.gxnews.com.cn/20190605/20190605101926735980a.gif', 'http://img.dou.gxnews.com.cn/20190605/20190605101927595141a.gif', 'http://img.dou.gxnews.com.cn/20190605/20190605101928663734a.gif', 'http://img.dou.gxnews.com.cn/20190605/20190605101929478622a.jpeg', 'http://img.dou.gxnews.com.cn/20190605/20190605101930473850a.jpeg']
+DEBUG crawler.py:162 下载图片成功
+DEBUG crawler.py:218 http://mini.eastday.com/a/190531215153423.html:开始上传缩略图
+DEBUG ftp_client.py:38 login success
+DEBUG ftp_client.py:53 upload 20190605101925404178a.gif success
+DEBUG crawler.py:222 http://mini.eastday.com/a/190531215153423.html:上传缩略图成功
+DEBUG crawler.py:243 http://mini.eastday.com/a/190531215153423.html:开始上传图片
+DEBUG ftp_client.py:38 login success
+DEBUG ftp_client.py:53 upload 20190605101926549496a.gif success
+DEBUG ftp_client.py:53 upload 20190605101926735980a.gif success
+DEBUG ftp_client.py:53 upload 20190605101927595141a.gif success
+DEBUG ftp_client.py:53 upload 20190605101928663734a.gif success
+DEBUG ftp_client.py:53 upload 20190605101929478622a.jpeg success
+DEBUG ftp_client.py:53 upload 20190605101930473850a.jpeg success
+DEBUG crawler.py:247 http://mini.eastday.com/a/190531215153423.html:上传图片成功
+DEBUG crawler.py:258 http://mini.eastday.com/a/190531215153423.html:生成用来发布的json文本
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): pcff.dou.gxnews.com.cn
+DEBUG connectionpool.py:396 http://pcff.dou.gxnews.com.cn:80 "POST /e/admin-92game/ecmsdo.php HTTP/1.1" 200 121
+DEBUG crawler.py:361 http://mini.eastday.com/a/190531215153423.html:已发送
+DEBUG crawler.py:386 ﻿待审核！含有水印:['dongfanghao']http://img.dou.gxnews.com.cn/20190605/20190605101929478622a.jpeg
+INFO _internal.py:88 127.0.0.1 - - [05/Jun/2019 10:19:35] "POST /transfer HTTP/1.1" 500 -
+INFO _internal.py:88  * Detected change in '/Users/lihao/Public/文档/PythonCode/trans_api/app/spider_store/extractors/eastday.py', reloading
+WARNING _internal.py:88  * Debugger is active!
+INFO _internal.py:88  * Debugger PIN: 360-911-915
+DEBUG crawler.py:32 mini.eastday.com
+DEBUG crawler.py:34 /a/190605070923048.html
+DEBUG crawler.py:60 site is eastday
+DEBUG crawler.py:88 开始获取文章信息
+DEBUG crawler.py:91 params is <module 'app.spider_store.extractors.eastday' from '/Users/lihao/Public/文档/PythonCode/trans_api/app/spider_store/extractors/eastday.py'>
+DEBUG common.py:534 get_content: http://mini.eastday.com/a/190605070923048.html
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): mini.eastday.com
+DEBUG connectionpool.py:396 http://mini.eastday.com:80 "GET /a/190605070923048.html HTTP/1.1" 200 None
+DEBUG common.py:534 get_content: http://mini.eastday.com/a/190605070923048-2.html
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): mini.eastday.com
+DEBUG connectionpool.py:396 http://mini.eastday.com:80 "GET /a/190605070923048-2.html HTTP/1.1" 200 None
+DEBUG common.py:534 get_content: http://mini.eastday.com/a/190605070923048-3.html
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): mini.eastday.com
+DEBUG connectionpool.py:396 http://mini.eastday.com:80 "GET /a/190605070923048-3.html HTTP/1.1" 200 None
+DEBUG common.py:534 get_content: http://mini.eastday.com/a/190605070923048-4.html
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): mini.eastday.com
+DEBUG connectionpool.py:396 http://mini.eastday.com:80 "GET /a/190605070923048-4.html HTTP/1.1" 200 None
+DEBUG common.py:534 get_content: http://mini.eastday.com/a/190605070923048-5.html
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): mini.eastday.com
+DEBUG connectionpool.py:396 http://mini.eastday.com:80 "GET /a/190605070923048-5.html HTTP/1.1" 302 0
+DEBUG connectionpool.py:396 http://mini.eastday.com:80 "GET /404.html HTTP/1.1" 200 None
+DEBUG eastday.py:59 清洗完成
+DEBUG crawler.py:122 开始下载缩略图: ['http://03imgmini.eastday.com/mobile/20190605/20190605070923_a8aa8b6a449fc3220e1f526a914ba8c1_1.jpeg']
+DEBUG common.py:90 开始下载: http://03imgmini.eastday.com/mobile/20190605/20190605070923_a8aa8b6a449fc3220e1f526a914ba8c1_1.jpeg
+DEBUG common.py:630 get_head: http://03imgmini.eastday.com/mobile/20190605/20190605070923_a8aa8b6a449fc3220e1f526a914ba8c1_1.jpeg
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): 03imgmini.eastday.com
+DEBUG connectionpool.py:396 http://03imgmini.eastday.com:80 "HEAD /mobile/20190605/20190605070923_a8aa8b6a449fc3220e1f526a914ba8c1_1.jpeg HTTP/1.1" 200 0
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): 03imgmini.eastday.com
+DEBUG connectionpool.py:396 http://03imgmini.eastday.com:80 "GET /mobile/20190605/20190605070923_a8aa8b6a449fc3220e1f526a914ba8c1_1.jpeg HTTP/1.1" 200 81285
+DEBUG common.py:145 下载完成
+
+DEBUG common.py:166 uploads:['http://img.dou.gxnews.com.cn/20190605/20190605102421308207a.jpeg']
+DEBUG crawler.py:134 下载缩略图成功
+DEBUG crawler.py:150 开始下载图片: ['http://03imgmini.eastday.com/mobile/20190605/20190605070923_a8aa8b6a449fc3220e1f526a914ba8c1_1.jpeg']
+DEBUG common.py:90 开始下载: http://03imgmini.eastday.com/mobile/20190605/20190605070923_a8aa8b6a449fc3220e1f526a914ba8c1_1.jpeg
+DEBUG common.py:630 get_head: http://03imgmini.eastday.com/mobile/20190605/20190605070923_a8aa8b6a449fc3220e1f526a914ba8c1_1.jpeg
+DEBUG connectionpool.py:396 http://03imgmini.eastday.com:80 "HEAD /mobile/20190605/20190605070923_a8aa8b6a449fc3220e1f526a914ba8c1_1.jpeg HTTP/1.1" 200 0
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): 03imgmini.eastday.com
+DEBUG connectionpool.py:396 http://03imgmini.eastday.com:80 "GET /mobile/20190605/20190605070923_a8aa8b6a449fc3220e1f526a914ba8c1_1.jpeg HTTP/1.1" 200 81285
+DEBUG common.py:145 下载完成
+
+DEBUG common.py:166 uploads:['http://img.dou.gxnews.com.cn/20190605/20190605102422364654a.jpeg']
+DEBUG crawler.py:162 下载图片成功
+DEBUG crawler.py:218 http://mini.eastday.com/a/190605070923048.html:开始上传缩略图
+DEBUG ftp_client.py:38 login success
+DEBUG ftp_client.py:53 upload 20190605102421308207a.jpeg success
+DEBUG crawler.py:222 http://mini.eastday.com/a/190605070923048.html:上传缩略图成功
+DEBUG crawler.py:243 http://mini.eastday.com/a/190605070923048.html:开始上传图片
+DEBUG ftp_client.py:38 login success
+DEBUG ftp_client.py:53 upload 20190605102422364654a.jpeg success
+DEBUG crawler.py:247 http://mini.eastday.com/a/190605070923048.html:上传图片成功
+DEBUG crawler.py:258 http://mini.eastday.com/a/190605070923048.html:生成用来发布的json文本
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): pcff.dou.gxnews.com.cn
+DEBUG connectionpool.py:396 http://pcff.dou.gxnews.com.cn:80 "POST /e/admin-92game/ecmsdo.php HTTP/1.1" 200 18
+DEBUG crawler.py:361 http://mini.eastday.com/a/190605070923048.html:已发送
+DEBUG crawler.py:386 ﻿黑名单信源
+INFO _internal.py:88 127.0.0.1 - - [05/Jun/2019 10:24:23] "POST /transfer HTTP/1.1" 500 -
+INFO _internal.py:88  * Detected change in '/Users/lihao/Public/文档/PythonCode/trans_api/app/spider_store/extractors/eastday.py', reloading
+WARNING _internal.py:88  * Debugger is active!
+INFO _internal.py:88  * Debugger PIN: 360-911-915
+DEBUG crawler.py:32 www.lieqinews.com
+DEBUG crawler.py:34 /a/n190408161600852.html
+DEBUG crawler.py:60 site is lieqinews
+DEBUG crawler.py:88 开始获取文章信息
+DEBUG crawler.py:91 params is <module 'app.spider_store.extractors.lieqi' from '/Users/lihao/Public/文档/PythonCode/trans_api/app/spider_store/extractors/lieqi.py'>
+DEBUG common.py:534 get_content: http://www.lieqinews.com/a/n190408161600852.html
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): www.lieqinews.com
+DEBUG connectionpool.py:396 http://www.lieqinews.com:80 "GET /a/n190408161600852.html HTTP/1.1" 200 19137
+DEBUG common.py:534 get_content: http://www.lieqinews.com/a/n190408161600852-2.html
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): www.lieqinews.com
+DEBUG connectionpool.py:396 http://www.lieqinews.com:80 "GET /a/n190408161600852-2.html HTTP/1.1" 200 19279
+DEBUG common.py:534 get_content: http://www.lieqinews.com/a/n190408161600852-3.html
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): www.lieqinews.com
+DEBUG connectionpool.py:396 http://www.lieqinews.com:80 "GET /a/n190408161600852-3.html HTTP/1.1" 200 19322
+DEBUG common.py:534 get_content: http://www.lieqinews.com/a/n190408161600852-4.html
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): www.lieqinews.com
+DEBUG connectionpool.py:396 http://www.lieqinews.com:80 "GET /a/n190408161600852-4.html HTTP/1.1" 200 19301
+DEBUG common.py:534 get_content: http://www.lieqinews.com/a/n190408161600852-5.html
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): www.lieqinews.com
+DEBUG connectionpool.py:396 http://www.lieqinews.com:80 "GET /a/n190408161600852-5.html HTTP/1.1" 200 19602
+DEBUG common.py:534 get_content: http://www.lieqinews.com/a/n190408161600852-6.html
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): www.lieqinews.com
+DEBUG connectionpool.py:396 http://www.lieqinews.com:80 "GET /a/n190408161600852-6.html HTTP/1.1" 200 18915
+DEBUG common.py:534 get_content: http://www.lieqinews.com/a/n190408161600852-7.html
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): www.lieqinews.com
+DEBUG connectionpool.py:396 http://www.lieqinews.com:80 "GET /a/n190408161600852-7.html HTTP/1.1" 200 18766
+DEBUG common.py:534 get_content: http://www.lieqinews.com/a/n190408161600852-8.html
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): www.lieqinews.com
+DEBUG connectionpool.py:396 http://www.lieqinews.com:80 "GET /a/n190408161600852-8.html HTTP/1.1" 200 18764
+DEBUG common.py:534 get_content: http://www.lieqinews.com/a/n190408161600852-9.html
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): www.lieqinews.com
+DEBUG connectionpool.py:396 http://www.lieqinews.com:80 "GET /a/n190408161600852-9.html HTTP/1.1" 200 19050
+DEBUG common.py:534 get_content: http://www.lieqinews.com/a/n190408161600852-10.html
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): www.lieqinews.com
+DEBUG connectionpool.py:396 http://www.lieqinews.com:80 "GET /a/n190408161600852-10.html HTTP/1.1" 302 0
+DEBUG connectionpool.py:396 http://www.lieqinews.com:80 "GET /404.html HTTP/1.1" 200 1848
+DEBUG lieqi.py:71 清洗完成
+DEBUG crawler.py:122 开始下载缩略图: ['https://00imgmini.eastday.com/mobile/20181110/20181110141301_221a21607b750f1991e000ce76a7b4af_1.jpeg']
+DEBUG common.py:90 开始下载: https://00imgmini.eastday.com/mobile/20181110/20181110141301_221a21607b750f1991e000ce76a7b4af_1.jpeg
+DEBUG common.py:630 get_head: https://00imgmini.eastday.com/mobile/20181110/20181110141301_221a21607b750f1991e000ce76a7b4af_1.jpeg
+DEBUG connectionpool.py:824 Starting new HTTPS connection (1): 00imgmini.eastday.com
+DEBUG connectionpool.py:396 https://00imgmini.eastday.com:443 "HEAD /mobile/20181110/20181110141301_221a21607b750f1991e000ce76a7b4af_1.jpeg HTTP/1.1" 200 0
+DEBUG connectionpool.py:824 Starting new HTTPS connection (1): 00imgmini.eastday.com
+DEBUG connectionpool.py:396 https://00imgmini.eastday.com:443 "GET /mobile/20181110/20181110141301_221a21607b750f1991e000ce76a7b4af_1.jpeg HTTP/1.1" 200 24240
+DEBUG common.py:145 下载完成
+
+DEBUG common.py:166 uploads:['http://img.dou.gxnews.com.cn/20190605/20190605104018046831a.jpeg']
+DEBUG crawler.py:134 下载缩略图成功
+DEBUG crawler.py:150 开始下载图片: ['https://00imgmini.eastday.com/mobile/20181110/20181110141301_221a21607b750f1991e000ce76a7b4af_1.jpeg', 'https://00imgmini.eastday.com/mobile/20181110/20181110141301_221a21607b750f1991e000ce76a7b4af_2.jpeg', 'https://00imgmini.eastday.com/mobile/20181110/20181110141301_221a21607b750f1991e000ce76a7b4af_3.jpeg', 'https://00imgmini.eastday.com/mobile/20181110/20181110141301_221a21607b750f1991e000ce76a7b4af_4.jpeg', 'https://00imgmini.eastday.com/mobile/20181110/20181110141301_221a21607b750f1991e000ce76a7b4af_5.jpeg', 'http://images.lieqinews.com/mobile/20190408162127_335x210_1554188729566046.gif', 'http://imgmini.eastday.com/pushimg/20190402/640x255_1554187835820551.jpeg;', 'http://imgmini.eastday.com/pushimg/20190402/640x286_1554187837184838.jpeg;', 'http://imgmini.eastday.com/pushimg/20190402/640x297_1554187838170521.jpeg']
+DEBUG common.py:90 开始下载: https://00imgmini.eastday.com/mobile/20181110/20181110141301_221a21607b750f1991e000ce76a7b4af_1.jpeg
+DEBUG common.py:630 get_head: https://00imgmini.eastday.com/mobile/20181110/20181110141301_221a21607b750f1991e000ce76a7b4af_1.jpeg
+DEBUG connectionpool.py:396 https://00imgmini.eastday.com:443 "HEAD /mobile/20181110/20181110141301_221a21607b750f1991e000ce76a7b4af_1.jpeg HTTP/1.1" 200 0
+DEBUG connectionpool.py:824 Starting new HTTPS connection (1): 00imgmini.eastday.com
+DEBUG connectionpool.py:396 https://00imgmini.eastday.com:443 "GET /mobile/20181110/20181110141301_221a21607b750f1991e000ce76a7b4af_1.jpeg HTTP/1.1" 200 24240
+DEBUG common.py:145 下载完成
+
+DEBUG common.py:90 开始下载: https://00imgmini.eastday.com/mobile/20181110/20181110141301_221a21607b750f1991e000ce76a7b4af_2.jpeg
+DEBUG common.py:630 get_head: https://00imgmini.eastday.com/mobile/20181110/20181110141301_221a21607b750f1991e000ce76a7b4af_2.jpeg
+DEBUG connectionpool.py:396 https://00imgmini.eastday.com:443 "HEAD /mobile/20181110/20181110141301_221a21607b750f1991e000ce76a7b4af_2.jpeg HTTP/1.1" 200 0
+DEBUG connectionpool.py:824 Starting new HTTPS connection (1): 00imgmini.eastday.com
+DEBUG connectionpool.py:396 https://00imgmini.eastday.com:443 "GET /mobile/20181110/20181110141301_221a21607b750f1991e000ce76a7b4af_2.jpeg HTTP/1.1" 200 12506
+DEBUG common.py:145 下载完成
+
+DEBUG common.py:90 开始下载: https://00imgmini.eastday.com/mobile/20181110/20181110141301_221a21607b750f1991e000ce76a7b4af_3.jpeg
+DEBUG common.py:630 get_head: https://00imgmini.eastday.com/mobile/20181110/20181110141301_221a21607b750f1991e000ce76a7b4af_3.jpeg
+DEBUG connectionpool.py:396 https://00imgmini.eastday.com:443 "HEAD /mobile/20181110/20181110141301_221a21607b750f1991e000ce76a7b4af_3.jpeg HTTP/1.1" 200 0
+DEBUG connectionpool.py:824 Starting new HTTPS connection (1): 00imgmini.eastday.com
+DEBUG connectionpool.py:396 https://00imgmini.eastday.com:443 "GET /mobile/20181110/20181110141301_221a21607b750f1991e000ce76a7b4af_3.jpeg HTTP/1.1" 200 37099
+DEBUG common.py:145 下载完成
+
+DEBUG common.py:90 开始下载: https://00imgmini.eastday.com/mobile/20181110/20181110141301_221a21607b750f1991e000ce76a7b4af_4.jpeg
+DEBUG common.py:630 get_head: https://00imgmini.eastday.com/mobile/20181110/20181110141301_221a21607b750f1991e000ce76a7b4af_4.jpeg
+DEBUG connectionpool.py:396 https://00imgmini.eastday.com:443 "HEAD /mobile/20181110/20181110141301_221a21607b750f1991e000ce76a7b4af_4.jpeg HTTP/1.1" 200 0
+DEBUG connectionpool.py:824 Starting new HTTPS connection (1): 00imgmini.eastday.com
+DEBUG connectionpool.py:396 https://00imgmini.eastday.com:443 "GET /mobile/20181110/20181110141301_221a21607b750f1991e000ce76a7b4af_4.jpeg HTTP/1.1" 200 31811
+DEBUG common.py:145 下载完成
+
+DEBUG common.py:90 开始下载: https://00imgmini.eastday.com/mobile/20181110/20181110141301_221a21607b750f1991e000ce76a7b4af_5.jpeg
+DEBUG common.py:630 get_head: https://00imgmini.eastday.com/mobile/20181110/20181110141301_221a21607b750f1991e000ce76a7b4af_5.jpeg
+DEBUG connectionpool.py:396 https://00imgmini.eastday.com:443 "HEAD /mobile/20181110/20181110141301_221a21607b750f1991e000ce76a7b4af_5.jpeg HTTP/1.1" 200 0
+DEBUG connectionpool.py:824 Starting new HTTPS connection (1): 00imgmini.eastday.com
+DEBUG connectionpool.py:396 https://00imgmini.eastday.com:443 "GET /mobile/20181110/20181110141301_221a21607b750f1991e000ce76a7b4af_5.jpeg HTTP/1.1" 200 33496
+DEBUG common.py:145 下载完成
+
+DEBUG common.py:90 开始下载: http://images.lieqinews.com/mobile/20190408162127_335x210_1554188729566046.gif
+DEBUG common.py:630 get_head: http://images.lieqinews.com/mobile/20190408162127_335x210_1554188729566046.gif
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): images.lieqinews.com
+DEBUG connectionpool.py:396 http://images.lieqinews.com:80 "HEAD /mobile/20190408162127_335x210_1554188729566046.gif HTTP/1.1" 404 0
+DEBUG connectionpool.py:396 http://images.lieqinews.com:80 "GET /mobile/20190408162127_335x210_1554188729566046.gif HTTP/1.1" 404 None
+DEBUG connectionpool.py:208 Starting new HTTP connection (1): images.lieqinews.com
+DEBUG connectionpool.py:396 http://images.lieqinews.com:80 "GET /mobile/20190408162127_335x210_1554188729566046.gif HTTP/1.1" 404 None
+DEBUG crawler.py:158 下载图片失败
+INFO _internal.py:88 127.0.0.1 - - [05/Jun/2019 10:40:27] "POST /transfer HTTP/1.1" 500 -
+INFO _internal.py:88 127.0.0.1 - - [06/Jun/2019 13:03:50] "GET /static/index/css/orionicons.css HTTP/1.1" 304 -
+INFO _internal.py:88 127.0.0.1 - - [06/Jun/2019 13:03:50] "GET /static/index/vendor/bootstrap/css/bootstrap.min.css HTTP/1.1" 200 -
+INFO _internal.py:88 127.0.0.1 - - [06/Jun/2019 13:03:50] "GET /static/index/css/style.default.css HTTP/1.1" 200 -
+INFO _internal.py:88 127.0.0.1 - - [06/Jun/2019 13:03:50] "GET /static/index/css/custom.css HTTP/1.1" 304 -
+INFO _internal.py:88 127.0.0.1 - - [06/Jun/2019 13:03:50] "GET /static/index/vendor/jquery/jquery.min.js HTTP/1.1" 200 -
+INFO _internal.py:88 127.0.0.1 - - [06/Jun/2019 13:03:50] "GET /static/index/vendor/popper.js/umd/popper.min.js HTTP/1.1" 200 -
+INFO _internal.py:88 127.0.0.1 - - [06/Jun/2019 13:03:50] "GET /static/index/vendor/bootstrap/js/bootstrap.min.js HTTP/1.1" 200 -
+INFO _internal.py:88 127.0.0.1 - - [06/Jun/2019 13:03:50] "GET /static/index/vendor/chart.js/Chart.min.js HTTP/1.1" 200 -
+INFO _internal.py:88 127.0.0.1 - - [06/Jun/2019 13:03:50] "GET /static/index/vendor/jquery.cookie/jquery.cookie.js HTTP/1.1" 304 -
+INFO _internal.py:88 127.0.0.1 - - [06/Jun/2019 13:03:51] "GET /trans HTTP/1.1" 200 -
+INFO _internal.py:88 127.0.0.1 - - [06/Jun/2019 13:03:51] "GET /static/index/css/bootstrap.css HTTP/1.1" 200 -
+INFO _internal.py:88 127.0.0.1 - - [06/Jun/2019 13:03:51] "GET /static/index/css/font-awesome.min.css HTTP/1.1" 200 -
+INFO _internal.py:88 127.0.0.1 - - [06/Jun/2019 13:03:51] "GET /static/index/css/style.css HTTP/1.1" 200 -
+INFO _internal.py:88 127.0.0.1 - - [06/Jun/2019 13:03:51] "GET /static/index/js/RHEL-server-7.0-x86_64-LinuxProbe.Com.js HTTP/1.1" 200 -
+INFO _internal.py:88 127.0.0.1 - - [06/Jun/2019 13:03:52] "GET /static/index/images/contact.jpg HTTP/1.1" 200 -
+INFO _internal.py:88 127.0.0.1 - - [06/Jun/2019 13:03:52] "GET /static/index/fonts/fontawesome-webfont.woff2?v=4.7.0 HTTP/1.1" 200 -
+INFO _internal.py:88 127.0.0.1 - - [06/Jun/2019 13:03:52] "GET /favicon.ico HTTP/1.1" 404 -
+INFO _internal.py:88  * Detected change in '/Users/lihao/Public/文档/PythonCode/trans_api/app/spider_store/configs.py', reloading
+WARNING _internal.py:88  * Debugger is active!
+INFO _internal.py:88  * Debugger PIN: 360-911-915

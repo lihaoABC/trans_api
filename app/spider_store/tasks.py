@@ -8,43 +8,62 @@ celery = Celery(
         backend=Config.CELERY_RESULT_BACKEND,
     )
 
-celery.autodiscover_tasks(["app.spider_store"])
-
 
 # @celery.task
-def main(url, category):
+def main(url, category, username=None,):
     """
     main program
     :return:
     """
     mongo = MongoWare()
     # k为域
-    k = check_url(url, mongo)
+    k, _url = check_url(url, username, mongo)
 
     # data为title, thumbnail, source, video_url的json
-    data = get_detail_info(k=k, url=url, mongo=mongo)
+    data = get_detail_info(k=k, url=_url, mongo=mongo)
 
     # thumbnail_local_files为缩略图服务器地址
-    thumbnail_local_files = thumbnail_download(data, url, mongo)
-    # video_local_files为视频的服务器地址
-    video_local_files = video_download(data, url, mongo, key=k)
+    thumbnail_local_files = thumbnail_download(data, k, _url, mongo)
+    if data["type"] == "video":
+        # video_local_files为视频的服务器地址
+        local_files = video_download(data, _url, mongo, key=k)
+    else:
+        local_files = pic_download(data, k, _url, mongo)
+    if thumbnail_local_files is None:
+        thumbnail_local_files = check_thumbnail(local_files, _url, mongo)
 
-    files_upload(thumbnail_local_files, video_local_files, url, mongo)
+    files_upload(thumbnail_local_files, local_files, _url, mongo, data)
 
-    json_data = post_data(
-        url,
-        category,
-        k,
-        data,
-        thumbnail_local_files,
-        video_local_files,
-    )
+    if data["type"] == "video":
+        json_data = post_data(
+            _url,
+            category,
+            k,
+            data,
+            thumbnail_local_files,
+            local_files,
+            username,
+            mongo,
+        )
+    else:
+        # 增加图文站后修改
+        json_data = post_data(
+            _url,
+            category,
+            k,
+            data,
+            thumbnail_local_files,
+            local_files,
+            username,
+            mongo,
+        )
     result = post_api(
+        data["type"],
         json_data,
-        url,
+        _url,
         mongo,
         thumbnail_local_files,
-        video_local_files,
+        local_files,
     )
 
     return result

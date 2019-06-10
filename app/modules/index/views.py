@@ -23,26 +23,45 @@ def trans():
     return render_template('trans.html')
 
 
+@index_blue.route('/support')
+def support():
+    return render_template('tables.html')
+
+
+@index_blue.route('/support2')
+def support2():
+    return render_template('tables2.html')
+
+
 @index_blue.route('/transfer', methods=['POST'])
 def transfer():
     url = request.form.get("url")
     category = request.form.get("category")
-    try:
-        # main.delay(url, category)
-        main(url, category)
-    except AssertionError as e:
-        return jsonify({'error': e.__str__()})
+    username = request.form.get("username")
+    # try:
+    # main.delay(url, category, username=username, )
+    main(url, category, username=username,)
+    # except Exception as e:
+    #     return jsonify({'error': e.__str__()})
 
     return jsonify({"result": "后台任务开启"})
 
 
 @index_blue.route('/show', methods=['GET'])
 def show_logs():
+    username = request.args.get("username")
     mongo = MongoWare()
-    mes_list = mongo.find()
+    mes_list = mongo.find_by_name(username)
     info = []
     for message in mes_list:
         mes_code = message["message"]
+        try:
+            mes = int(mes_code)
+        except ValueError:
+            message["message"] = mes_code
+            del message["_id"]
+            info.append(message)
+            continue
         for key, value in COD.__dict__.items():
             if value == mes_code:
                 mess = message_map[COD.__dict__[key]]

@@ -1,22 +1,31 @@
 import datetime
 import ftplib
+import logging
 
-from app.spider_store.configs import OUTPUT_DIR
+from app.spider_store.configs import (
+    OUTPUT_DIR,
+    VIDEO_FTP_HOST,
+    VIDEO_FTP_PORT,
+    VIDEO_FTP_USER,
+    VIDEO_FTP_PASSWORD,
+    BUFSIZE
+
+)
 
 
 class UploadsFiles(object):
 
     def __init__(self, files):
-        self.host = '47.98.221.90'
-        self.port = 21
-        self.username = 'ftpnews'
-        self.password = 'video293840'
+        self.host = VIDEO_FTP_HOST
+        self.port = VIDEO_FTP_PORT
+        self.username = VIDEO_FTP_USER
+        self.password = VIDEO_FTP_PASSWORD
         path = datetime.datetime.now().strftime('%Y%m%d')
         self.filePath = OUTPUT_DIR + path
         self.serverPath = '/' + path
         # self.serverPath = '/test12'
         self.files = files
-        self.bufsize = 8192
+        self.bufsize = BUFSIZE
 
     def uploads(self):
 
@@ -26,14 +35,14 @@ class UploadsFiles(object):
             # session.set_pasv(True)
             session.connect(self.host, self.port)
             session.login(self.username, self.password)
-            print('login success')
+            logging.debug('login success')
             try:
                 session.cwd(self.serverPath)
             except Exception as e:
                 session.mkd(self.serverPath)
-                print('创建文件夹成功')
+                logging.debug('创建文件夹成功')
                 session.cwd(self.serverPath)
-                print('切换文件夹成功')
+                logging.debug('切换文件夹成功')
 
             for filename in self.files:
                 serverFileName = filename.split('/')[-1]
@@ -41,7 +50,7 @@ class UploadsFiles(object):
                     file.seek(0)
                     session.storbinary('STOR ' + serverFileName, file, self.bufsize)
                     session.set_debuglevel(0)
-                    print('upload ' + serverFileName + ' success')
+                    logging.debug('upload ' + serverFileName + ' success')
 
             session.quit()
             return True

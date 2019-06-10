@@ -5,140 +5,31 @@ import io
 import os
 import random
 import re
+import subprocess
 import sys
 import time
-import json
-import socket
 import locale
 import logging
-import argparse
-from http import cookiejar
-from importlib import import_module
-from urllib import request, parse, error
+from PIL import Image
+from urllib import request, parse
 import urllib3
 
 import requests
 from requests.adapters import HTTPAdapter
 
-from app.spider_store.configs import (FAKE_HEADERS, SITES, OUTPUT_DIR, POST_HOST, POST_HEADERS)
-from app.spider_store.utils import (log, term, )
-from app.spider_store.utils.changeJPG import change_jpg
-from app.spider_store.utils.strings import get_filename, unescape_html
+from importlib import import_module
+from app.spider_store.configs import SITES
+
+from app.spider_store.configs import (FAKE_HEADERS, OUTPUT_DIR, DOU_POST_HOST, POST_USER_AGENT)
+from app.spider_store.utils.response_code import COD
 
 # 改变默认编码
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf8')
-
-NOT_SITES = {
-    '163'              : 'netease',
-    '56'               : 'w56',
-    '365yg'            : 'toutiao',
-    'acfun'            : 'acfun',
-    'archive'          : 'archive',
-    'baidu'            : 'baidu',
-    'bandcamp'         : 'bandcamp',
-    'baomihua'         : 'baomihua',
-    'bigthink'         : 'bigthink',
-    'bilibili'         : 'bilibili',
-    'cctv'             : 'cntv',
-    'cntv'             : 'cntv',
-    'cbs'              : 'cbs',
-    'coub'             : 'coub',
-    'dailymotion'      : 'dailymotion',
-    'douban'           : 'douban',
-    'douyin'           : 'douyin',
-    'douyu'            : 'douyutv',
-    'ehow'             : 'ehow',
-    'facebook'         : 'facebook',
-    'fc2'              : 'fc2video',
-    'flickr'           : 'flickr',
-    'freesound'        : 'freesound',
-    'fun'              : 'funshion',
-    'google'           : 'google',
-    'giphy'            : 'giphy',
-    'heavy-music'      : 'heavymusic',
-    'huomao'           : 'huomaotv',
-    'iask'             : 'sina',
-    'icourses'         : 'icourses',
-    'ifeng'            : 'ifeng',
-    'imgur'            : 'imgur',
-    'in'               : 'alive',
-    'infoq'            : 'infoq',
-    'instagram'        : 'instagram',
-    'interest'         : 'interest',
-    'iqilu'            : 'iqilu',
-    'iqiyi'            : 'iqiyi',
-    'ixigua'           : 'ixigua',
-    'isuntv'           : 'suntv',
-    'iwara'            : 'iwara',
-    'joy'              : 'joy',
-    'kankanews'        : 'bilibili',
-    'khanacademy'      : 'khan',
-    'ku6'              : 'ku6',
-    'kuaishou'         : 'kuaishou',
-    'kugou'            : 'kugou',
-    'kuwo'             : 'kuwo',
-    'le'               : 'le',
-    'letv'             : 'le',
-    'lizhi'            : 'lizhi',
-    'longzhu'          : 'longzhu',
-    'magisto'          : 'magisto',
-    'metacafe'         : 'metacafe',
-    'mgtv'             : 'mgtv',
-    'miomio'           : 'miomio',
-    'mixcloud'         : 'mixcloud',
-    'mtv81'            : 'mtv81',
-    'musicplayon'      : 'musicplayon',
-    'miaopai'          : 'yixia',
-    'naver'            : 'naver',
-    '7gogo'            : 'nanagogo',
-    'nicovideo'        : 'nicovideo',
-    'panda'            : 'panda',
-    'pinterest'        : 'pinterest',
-    'pixnet'           : 'pixnet',
-    'pptv'             : 'pptv',
-    'qingting'         : 'qingting',
-    'qq'               : 'qq',
-    'showroom-live'    : 'showroom',
-    'sina'             : 'sina',
-    'smgbb'            : 'bilibili',
-    'sohu'             : 'sohu',
-    'soundcloud'       : 'soundcloud',
-    'ted'              : 'ted',
-    'theplatform'      : 'theplatform',
-    'tiktok'           : 'tiktok',
-    'tucao'            : 'tucao',
-    'tudou'            : 'tudou',
-    'tumblr'           : 'tumblr',
-    'twimg'            : 'twitter',
-    'twitter'          : 'twitter',
-    'ucas'             : 'ucas',
-    'videomega'        : 'videomega',
-    'vidto'            : 'vidto',
-    'vimeo'            : 'vimeo',
-    'wanmen'           : 'wanmen',
-    'weibo'            : 'miaopai',
-    'veoh'             : 'veoh',
-    'vine'             : 'vine',
-    'vk'               : 'vk',
-    'xiami'            : 'xiami',
-    'xiaokaxiu'        : 'yixia',
-    'xiaojiadianvideo' : 'fc2video',
-    'ximalaya'         : 'ximalaya',
-    'yinyuetai'        : 'yinyuetai',
-    'yizhibo'          : 'yizhibo',
-    'youku'            : 'youku',
-    'youtu'            : 'youtube',
-    'youtube'          : 'youtube',
-    'zhanqi'           : 'zhanqi',
-    'zhibo'            : 'zhibo',
-    'zhihu'            : 'zhihu',
-}
 
 
 dry_run = False
 json_output = False
 force = False
-player = None
 extractor_proxy = None
 cookies = None
 output_filename = None
@@ -158,6 +49,14 @@ session.mount('http://', HTTPAdapter(max_retries=3))
 session.mount('https://', HTTPAdapter(max_retries=3))
 
 
+def import_extractor(k, sites=SITES):
+    if k in sites:
+        params = import_module('app.spider_store.extractors.'+sites[k])
+        return params
+    else:
+        return "模块不存在"
+
+
 def get_output_dir():
     return OUTPUT_DIR + datetime.datetime.now().strftime('%Y%m%d') + '/'
 
@@ -166,126 +65,344 @@ def get_output_name():
     return datetime.datetime.now().strftime('%Y%m%d%H%M%S%f') + 'a'
 
 
-def img_download(image_urls):
+def get_second_dir():
+    return datetime.datetime.now().strftime('%Y%m%d')
+
+
+def change_jpg(before_path, after_path):
+    im = Image.open(before_path)
+    im.save(after_path)
+
+
+def files_download(urls, referer=None, cookies=None, fileinfo=None):
     """
-    图片下载
-    :param image_url: 图片连接
+    文件下载
+    :param urls: 文件连接[列表]
     :return: 上传后的地址列表
     """
-    assert image_urls, "图片地址为空"
-    new_image_url = []
-    # 未能正确获得网页 就进行异常处理
-    # res = None
-    for image_url in image_urls:
-        logging.debug('开始下载: {}'.format(image_url))
+    assert urls, "文件地址为空"
+    uploads_paths = []
+    local_paths = []
 
-        if cookies:
-            session.cookies = cookies
+    for url in urls:
+        if re.search(r"http[s]?://None", url):
+            raise AssertionError("url格式获取不正确，{}".format(url))
+        logging.debug('开始下载: {}'.format(url))
+        file_name = get_output_name()
+        file_path = get_output_dir()
+        if not os.path.isdir(file_path):
+            try:
+                os.mkdir(file_path)
+            except:
+                os.makedirs(file_path)
+        if referer:
+            headers = {
+                'referer': referer,
+                'user-agent': POST_USER_AGENT
+            }
+        else:
+            headers = {
+                'user-agent': POST_USER_AGENT
+            }
 
-        response = urlopen_with_retry(image_url, headers=POST_HEADERS, timeout=(5, 15))
+        header = get_head(url, headers=headers, cookies=cookies)
+        ext = header["Content-Type"].split('/')[-1]
+        type = header["Content-Type"].split('/')[0]
+        try:
+            length = header["Content-Length"]
+        except Exception:
+            length = None
+        if fileinfo:
+            size = fileinfo["size"]
+            if size is None:
+                size = length
+        else:
+            size = length
+        if size is not None:
+            size = float("{:.2f}".format(int(size) / 1024 / 1024))
+            if size >= float(100):
+                raise AssertionError("文件过大:{}MB".format(size))
+        response = urlopen_with_retry(url, headers=headers, timeout=(5, 15))
+        time.sleep(random.random())
+        if response.status_code != 200:
+            raise Exception('未下载成功:{}'.format(url))
         data = response.content
-
-        img_name = get_output_name()
-        image_path = get_output_dir()
-        filename = os.path.join(image_path + img_name + '.jpg')
-        if re.search(r'gif', image_url):
-            filename = os.path.join(image_path + img_name + '.gif')
+        filename = os.path.join('{}{}.{}'.format(file_path, file_name, ext))
 
         if not os.path.isdir(os.path.dirname(filename)):
-            os.makedirs(os.path.dirname(filename))
+            try:
+                os.makedirs(os.path.dirname(filename))
+            except Exception as e:
+                logging.debug(e.args)
+                os.mkdir(os.path.dirname(filename))
         try:
             if data == b'' or None or '':
                 logging.debug('内容为空，不执行保存')
-                return None
+                raise AssertionError('内容为空，不执行保存')
             else:
                 with open(filename, 'wb') as f:
                     f.write(data)
                     logging.debug('下载完成\n')
-        except:
+                local_paths.append(filename)
+
+        except Exception as e:
+            logging.debug(e.args)
             logging.debug('下载失败\n')
-            return None
-
-        # webp格式转换jpg
-        if re.search(r'webp', image_url):
-            change_jpg(filename, filename)
-
+            raise AssertionError("下载失败")
         time.sleep(random.random())
-        path = datetime.datetime.now().strftime('%Y%m%d') + '/'
-        if re.search(r'gif', image_url):
-            new_image_url.append(POST_HOST + path + img_name + '.gif')  # 传入上传成功的路径
+        if (type == "video") and (len(urls) > 1):
+            return ffmpeg_concat_mp4_to_mp4(local_paths)
+        path = get_second_dir() + '/'
+        # webp格式转换jpg
+        if ext == "webp":
+            new_ext = "jpeg"
+            new_filename = os.path.join('{0}{1}.{2}'.format(file_path, file_name, new_ext))
+            os.rename(filename, new_filename)
+            # 先更改filename，后用方法change_jpg
+            change_jpg(new_filename, new_filename)
+            uploads_paths.append('{0}{1}{2}.{3}'.format(DOU_POST_HOST, path, file_name, new_ext))  # 传入上传成功的路径
         else:
-            new_image_url.append(POST_HOST + path + img_name + '.jpg')  # 传入上传成功的路径
-
-    return new_image_url
-
-
-def rc4(key, data):
-    # all encryption algo should work on bytes
-    assert type(key) == type(data) and type(key) == type(b'')
-    state = list(range(256))
-    j = 0
-    for i in range(256):
-        j += state[i] + key[i % len(key)]
-        j &= 0xff
-        state[i], state[j] = state[j], state[i]
-
-    i = 0
-    j = 0
-    out_list = []
-    for char in data:
-        i += 1
-        i &= 0xff
-        j += state[i]
-        j &= 0xff
-        state[i], state[j] = state[j], state[i]
-        prn = state[(state[i] + state[j]) & 0xff]
-        out_list.append(char ^ prn)
-
-    return bytes(out_list)
+            uploads_paths.append('{0}{1}{2}.{3}'.format(DOU_POST_HOST, path, file_name, ext))  # 传入上传成功的路径
+    logging.debug("uploads:{}".format(uploads_paths))
+    return uploads_paths
 
 
-def general_m3u8_extractor(url, headers={}):
-    m3u8_list = get_content(url, headers=headers).split('\n')
-    urls = []
-    for line in m3u8_list:
-        line = line.strip()
-        if line and not line.startswith('#'):
-            if line.startswith('http'):
-                urls.append(line)
+def video_downloads(key, url, mongo):
+    uploads_path = []
+    filename = get_output_name()
+    path = get_output_dir()
+    second_path = get_second_dir() + '/'
+    a = subprocess.run(['you-get', '-i', url], stdout=subprocess.PIPE)
+    dash = a.stdout.decode().replace(' ', '').replace('\n', '')
+    logging.debug("dash is {}".format(dash))
+    if not dash:
+        return None
+    _format = re.findall(r"format:(.*?)container:(.*?)quality", dash, re.S)
+    if _format != []:
+        _format = dict(_format)
+        for d in list(_format.keys()):
+            rd = repr(d).replace(r"\x1b[0m'", '').replace(r"'\x1b[7m", '')
+            _format[rd] = _format.pop(d)
+        logging.debug("dash_dict is {}".format(_format))
+        if key == "bilibili":
+            if 'dash-flv360' in list(_format.keys()):
+                ext = _format["dash-flv360"]
+                if ext == "mp4":
+                    try:
+                        subprocess.check_call(
+                            ['you-get',
+                             '--format=dash-flv360',
+                             '-o',
+                             '{}'.format(path),
+                             '-O',
+                             '{}'.format(filename),
+                             url],
+                            shell=False
+                        )
+                        logging.debug(r'{}:下载视频成功'.format(url))
+                        mongo.update(url, COD.GETVIDEO)
+                        uploads_path.append("{}{}{}.{}".format(DOU_POST_HOST, second_path, filename, ext))
+                        return uploads_path
+                    except Exception:
+                        logging.debug(r"{}:执行视频下载失败".format(url))
+                        mongo.update(url, COD.VIDEOERR)
+                        raise Exception("{}:执行视频下载失败".format(url))
+
             else:
-                seg_url = parse.urljoin(url, line)
-                urls.append(seg_url)
-    return urls
+                try:
+                    subprocess.check_call(
+                        ['you-get',
+                         '--format=flv360',
+                         '-o',
+                         '{}'.format(path),
+                         '-O',
+                         '{}'.format(filename),
+                         url],
+                        shell=False
+                    )
+                    logging.debug(r'{}:下载视频成功'.format(url))
+                    mongo.update(url, COD.GETVIDEO)
+                    logging.debug(r"{}:视频转码中".format(url))
+                    mongo.update(url, COD.RESET)
+                    subprocess.check_call(
+                        ['ffmpeg',
+                         '-i',
+                         '{}'.format(path + filename + '.flv'),
+                         '{}'.format(path + filename + '.mp4'),
+                         ],
+                        shell=False
+                    )
+                    logging.debug(r"{}:视频转码成功".format(url))
+                    mongo.update(url, COD.RESOK)
+                    uploads_path.append("{}{}{}.{}".format(DOU_POST_HOST, second_path, filename, "mp4"))
+                    return uploads_path
+                except Exception:
+                    logging.debug(r"{}:执行视频下载失败".format(url))
+                    mongo.update(url, COD.VIDEOERR)
+                    raise Exception("{}:执行视频下载失败".format(url))
+        else:
+            try:
+                subprocess.check_call(
+                    ['you-get',
+                     '--itag=18',
+                     '-o',
+                     '{}'.format(path),
+                     '-O',
+                     '{}'.format(filename),
+                     url],
+                    shell=False
+                )
+                logging.debug(r'{}:下载视频成功'.format(url))
+                mongo.update(url, COD.GETVIDEO)
 
+                uploads_path.append("{}{}{}.{}".format(DOU_POST_HOST, second_path, filename, "mp4"))
+                return uploads_path
+            except Exception:
+                logging.debug(r"{}:执行视频下载失败".format(url))
+                mongo.update(url, COD.VIDEOERR)
+                raise Exception("{}:执行视频下载失败".format(url))
 
-def maybe_print(*s):
-    try:
-        print(*s)
-    except:
-        pass
-
-
-def tr(s):
-    if default_encoding == 'utf-8':
-        return s
     else:
-        return s
-        # return str(s.encode('utf-8'))[2:-1]
+        try:
+            subprocess.check_call(
+                ['you-get',
+                 '-o',
+                 '{}'.format(path),
+                 '-O',
+                 '{}'.format(filename),
+                 url],
+                shell=False
+            )
+            logging.debug(r'{}:下载视频成功'.format(url))
+            mongo.update(url, COD.GETVIDEO)
+            try:
+                size = re.search(r"Size:(.*?)MiB", dash, re.S).group(1)
+                logging.debug("Size is {}".format(size))
+            except Exception:
+                size = None
+            if size is not None:
+                if float(size) >= float(50):
+                    new_filename = get_output_name()
+                    logging.debug(r"{}:视频转码中".format(url))
+                    mongo.update(url, COD.RESET)
+                    subprocess.check_call(
+                        ['ffmpeg',
+                         '-i',
+                         '{}'.format(path + filename + '.mp4'),
+                         '-b:v',
+                         '512k',
+                         '{}'.format(path + new_filename + '.mp4'),
+                         '-y'
+                         ],
+                        shell=False
+                    )
+                    uploads_path.append("{}{}{}.{}".format(DOU_POST_HOST, second_path, filename, "mp4"))
+                    return uploads_path
+
+            uploads_path.append("{}{}{}.{}".format(DOU_POST_HOST, second_path, filename, "mp4"))
+            return uploads_path
+
+        except Exception:
+            logging.debug(r"{}:执行视频下载失败".format(url))
+            mongo.update(url, COD.VIDEOERR)
+            raise Exception("{}:执行视频下载失败".format(url))
 
 
-# DEPRECATED in favor of match1()
-def r1(pattern, text):
-    m = re.search(pattern, text)
-    if m:
-        return m.group(1)
+def generate_thumbnail(video_local_files,):
+    """
+    根据视频生成缩略图
+    :param video_local_files:
+    :return:
+    """
+    thumbnail = []
+    logging.debug("生成缩略图中")
+    filename = video_local_files.split('/')[-1]
+    path = get_output_dir() + filename
+    second_path = get_second_dir() + '/'
+    thumbnail_path = re.sub(r'(\..*$)', '.jpg', path)
+    thumbnail_name = re.sub(r'(\..*$)', '.jpg', filename)
+
+    # time ffmpeg -ss 00:00:06 -i /Users/lihao/Desktop/1/x.mp4 -f image2 -y /Users/lihao/Desktop/1/test2.jpg
+    try:
+        subprocess.check_call(
+            [
+                "time",
+                'ffmpeg',
+                'ss',
+                '00:00:06',
+                '-i',
+                '{}'.format(path),
+                '-f',
+                'image2',
+                '-y',
+                '{}'.format(thumbnail_path),
+             ],
+            shell=False
+        )
+        time.sleep(random.random())
+        thumbnail.append('{}{}.{}'.format(DOU_POST_HOST, second_path, thumbnail_name))  # 传入上传成功的路径
+        thumbnail.append(thumbnail_path)
+        return thumbnail
+
+    except Exception as e:
+        logging.debug('生成缩略图失败：{}'.format(e.args))
+        return None
 
 
-# DEPRECATED in favor of match1()
-def r1_of(patterns, text):
-    for p in patterns:
-        x = r1(p, text)
-        if x:
-            return x
+def ffmpeg_concat_mp4_to_mp4(local_paths):
+    uploads_path = []
+    ts_path = []
+    logging.debug('开始合并视频')
+    for i, url in enumerate(local_paths):
+        mp4_name = url.split('/')[-1]
+        ts_name = mp4_name.replace('mp4', 'ts')
+        new_file = url.replace(mp4_name, ts_name)
+        try:
+            subprocess.check_call(
+                ['ffmpeg',
+                 '-i',
+                 '{}'.format(url),
+                 '-vcodec',
+                 'copy',
+                 '-acodec',
+                 'copy',
+                 '-vbsf',
+                 'h264_mp4toannexb',
+                 '{}'.format(new_file),
+                 ],
+                shell=False
+            )
+            ts_path.append(new_file)
+        except:
+            raise AssertionError("转换mp4为ts文件失败")
+
+    # 'ffmpeg -i "concat:1.ts|2.ts" -acodec copy -vcodec copy -absf aac_adtstoasc output.mp4'
+    filename = get_output_name()
+    path = get_output_dir()
+    second_path = get_second_dir() + '/'
+    concat = "concat:{}".format('|'.join(ts_path))
+    filename_path = "{}{}.mp4".format(path, filename)
+
+    try:
+        subprocess.check_call(
+            ['ffmpeg',
+             '-i',
+             '{}'.format(concat),
+             '-acodec',
+             'copy',
+             '-vcodec',
+             'copy',
+             '-absf',
+             'aac_adtstoasc',
+             '{}'.format(filename_path),
+             ],
+            shell=False
+        )
+        uploads_path.append("{}{}{}.{}".format(DOU_POST_HOST, second_path, filename, "mp4"))
+    except:
+        raise AssertionError("转换mp4为ts文件失败")
+
+    return uploads_path
 
 
 def match1(text, *patterns):
@@ -335,73 +452,6 @@ def matchall(text, patterns):
     return ret
 
 
-def launch_player(player, urls):
-    import subprocess
-    import shlex
-    if (sys.version_info >= (3, 3)):
-        import shutil
-        exefile=shlex.split(player)[0]
-        if shutil.which(exefile) is not None:
-            subprocess.call(shlex.split(player) + list(urls))
-        else:
-            log.wtf('[Failed] Cannot find player "%s"' % exefile)
-    else:
-        subprocess.call(shlex.split(player) + list(urls))
-
-
-def parse_query_param(url, param):
-    """Parses the query string of a URL and returns the value of a parameter.
-
-    Args:
-        url: A URL.
-        param: A string representing the name of the parameter.
-
-    Returns:
-        The value of the parameter.
-    """
-
-    try:
-        return parse.parse_qs(parse.urlparse(url).query)[param][0]
-    except:
-        return None
-
-
-def unicodize(text):
-    return re.sub(
-        r'\\u([0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f])',
-        lambda x: chr(int(x.group(0)[2:], 16)),
-        text
-    )
-
-
-# DEPRECATED in favor of util.legitimize()
-def escape_file_path(path):
-    path = path.replace('/', '-')
-    path = path.replace('\\', '-')
-    path = path.replace('*', '-')
-    path = path.replace('?', '-')
-    return path
-
-
-def ungzip(data):
-    """Decompresses data for Content-Encoding: gzip.
-    """
-    from io import BytesIO
-    import gzip
-    buffer = BytesIO(data)
-    f = gzip.GzipFile(fileobj=buffer)
-    return f.read()
-
-
-def undeflate(data):
-    """Decompresses data for Content-Encoding: deflate.
-    (the zlib compression is used.)
-    """
-    import zlib
-    decompressobj = zlib.decompressobj(-zlib.MAX_WBITS)
-    return decompressobj.decompress(data)+decompressobj.flush()
-
-
 # DEPRECATED in favor of get_content()
 def get_response(url, faker=False):
     logging.debug('get_response: %s' % url)
@@ -419,10 +469,6 @@ def get_response(url, faker=False):
         response = request.urlopen(url)
 
     data = response.read()
-    if response.info().get('Content-Encoding') == 'gzip':
-        data = ungzip(data)
-    elif response.info().get('Content-Encoding') == 'deflate':
-        data = undeflate(data)
     response.data = data
     return response
 
@@ -437,7 +483,7 @@ def get_html(url, encoding=None, faker=False):
 def get_decoded_html(url, faker=False):
     response = get_response(url, faker)
     data = response.data
-    charset = r1(r'charset=([\w-]+)', response.headers['content-type'])
+    charset = match1(response.headers['content-type'], r'charset=([\w-]+)')
     if charset:
         return data.decode(charset, 'ignore')
     else:
@@ -451,10 +497,11 @@ def get_location(url):
 
 
 def urlopen_with_retry(*args, method='get', **kwargs):
+
     retry_time = 3
     for i in range(retry_time):
         try:
-            return getattr(session, method)(
+            return getattr(requests, method)(
                 *args, stream=True, verify=False, **kwargs
             )
         except requests.Timeout as e:
@@ -469,14 +516,16 @@ def urlopen_with_retry(*args, method='get', **kwargs):
             if i + 1 == retry_time:
                 raise http_error
 
+        except Exception as e:
+            logging.debug("eeeeeee")
 
-def get_content(url, headers=FAKE_HEADERS):
+
+def get_content(url, headers=FAKE_HEADERS, charset="utf-8"):
     """Gets the content of a URL via sending a HTTP GET request.
 
     Args:
         url: A URL.
         headers: Request headers used by the client.
-        decoded: Whether decode the response body using UTF-8 or the charset specified in Content-Type.
 
     Returns:
         The content as a string.
@@ -485,10 +534,10 @@ def get_content(url, headers=FAKE_HEADERS):
     logging.debug('get_content: {}'.format(url))
 
     if cookies:
-        session.cookies = cookies
+        requests.cookies = cookies
 
     response = urlopen_with_retry(url, headers=headers)
-    data = response.content.decode()
+    data = response.content.decode(charset)
     return data
 
 
@@ -519,13 +568,6 @@ def post_content(url, headers={}, post_data={}, decoded=True, **kwargs):
     response = urlopen_with_retry(req, data=post_data_enc)
     data = response.read()
 
-    # Handle HTTP compression for gzip and deflate (zlib)
-    content_encoding = response.getheader('Content-Encoding')
-    if content_encoding == 'gzip':
-        data = ungzip(data)
-    elif content_encoding == 'deflate':
-        data = undeflate(data)
-
     # Decode the response body
     if decoded:
         charset = match1(
@@ -539,588 +581,76 @@ def post_content(url, headers={}, post_data={}, decoded=True, **kwargs):
     return data
 
 
-def url_size(url, headers=FAKE_HEADERS):
-    response = urlopen_with_retry(url, headers=headers)
-    size = response.headers['content-length']
-    return int(size) if size is not None else float('inf')
+def size_to_mb(size):
+    return float("{:.2f}".format(int(size) / 1024 / 1024)) if size is not None else float('inf')
 
 
-def urls_size(urls, headers=FAKE_HEADERS):
-    return sum([url_size(url, headers=headers) for url in urls])
+def url_size(url, headers=None, cookies=None):
+    headers = get_head(url, headers=headers, cookies=cookies)
+    try:
+        size = headers["Content-Length"]
+        return float("{:.2f}".format(int(size) / 1024 / 1024)) if size is not None else float('inf')
+    except KeyError:
+        return float('inf')
 
 
-def get_head(url, headers=FAKE_HEADERS):
+def urls_size(urls, headers=None):
+    return sum([url_size(url, headers=headers, cookies=None) for url in urls])
+
+
+def url_info(headers, url):
+    try:
+        size = headers["Content-Length"]
+        size = float("{:.2f}".format(int(size) / 1024 / 1024)) if size is not None else float('inf')
+    except KeyError:
+        size = float('inf')
+    try:
+        content_type = headers['Content-Type']
+    except KeyError:
+        content_type = None
+    if content_type is not None:
+        ext = headers['Content-Type'].split('/')[-1]
+    else:
+        ext = None
+
+    if not ext:
+        ext = re.split(r'\.', url)[-1]
+        try:
+            ext = re.search(r"(^[a-z]+)[^\w].*$", ext).group(1)
+        except AttributeError:
+            raise AttributeError("文件类型无法识别")
+
+    return {
+        "size": size,
+        "ext": ext,
+    }
+
+
+def get_head(url, headers=None, cookies=None):
     logging.debug('get_head: {}'.format(url))
-    res = urlopen_with_retry(url, headers=headers)
+    if cookies:
+        session.cookies = cookies
+    res = session.head(url, headers=headers)
+    if res.status_code != 200:
+        res = session.get(url, headers=headers)
     return res.headers
 
 
-def url_info(url, headers=FAKE_HEADERS, refer=None):
-    logging.debug('url_info: {}'.format(url))
-    if refer:
-        headers.update({'Referer': refer})
-    headers = get_head(url, headers)
-
-    _type = headers['Content-Type']
-    if _type == 'image/jpg; charset=UTF-8' or _type == 'image/jpg':
-        _type = 'audio/mpeg'  # fix for netease
-    mapping = {
-        'video/3gpp': '3gp',
-        'video/f4v': 'flv',
-        'video/mp4': 'mp4',
-        'video/MP2T': 'ts',
-        'video/quicktime': 'mov',
-        'video/webm': 'webm',
-        'video/x-flv': 'flv',
-        'video/x-ms-asf': 'asf',
-        'audio/mp4': 'mp4',
-        'audio/mpeg': 'mp3',
-        'audio/wav': 'wav',
-        'audio/x-wav': 'wav',
-        'audio/wave': 'wav',
-        'image/jpeg': 'jpg',
-        'image/png': 'png',
-        'image/gif': 'gif',
-        'application/pdf': 'pdf',
-    }
-    if _type in mapping:
-        ext = mapping[_type]
-    elif '.' in url:
-        _type = ext = url.split('.')[-1]
-    else:
-        _type = None
-        if headers['content-disposition']:
-            try:
-                filename = parse.unquote(
-                    match1(
-                        headers['content-disposition'], r'filename="?([^"]+)"?'
-                    )
-                )
-                if len(filename.split('.')) > 1:
-                    ext = filename.split('.')[-1]
-                else:
-                    ext = None
-            except Exception:
-                ext = None
-        else:
-            ext = None
-
-    if headers.get('transfer-encoding') != 'chunked':
-        size = headers['content-length'] and int(headers['content-length'])
-    else:
-        size = None
-
-    return _type, ext, size
-
-
 def url_locations(urls, headers=FAKE_HEADERS):
+    """
+
+    :param urls: list
+    :param headers: FAKE_HEADERS
+    :return: list
+    """
     locations = []
     for url in urls:
         logging.debug('url_locations: %s' % url)
 
-        response = urlopen_with_retry(url, headers=headers)
+        response = urlopen_with_retry(url, headers=headers, time=(5, 15))
 
         locations.append(response.url)
     return locations
-
-
-def url_save(
-    url, filepath, bar, refer=None, is_part=False, headers=None, timeout=None,
-    **kwargs
-):
-    tmp_headers = headers.copy() if headers else FAKE_HEADERS.copy()
-    # When a referer specified with param refer,
-    # the key must be 'Referer' for the hack here
-    if refer:
-        tmp_headers['Referer'] = refer
-    file_size = url_size(url, headers=tmp_headers)
-
-    if not os.path.exists(os.path.dirname(filepath)):
-        os.mkdir(os.path.dirname(filepath))
-
-    temp_filepath = filepath + '.download' if file_size != float('inf') \
-        else filepath
-    received = 0
-    if not force:
-        open_mode = 'ab'
-
-        if os.path.exists(temp_filepath):
-            received += os.path.getsize(temp_filepath)
-            # if bar:
-            #     bar.update_received(os.path.getsize(temp_filepath))
-    else:
-        open_mode = 'wb'
-
-    if received < file_size:
-        if received:
-            tmp_headers['Range'] = 'bytes=' + str(received) + '-'
-        if refer:
-            tmp_headers['Referer'] = refer
-        kwargs = {
-            'headers': tmp_headers,
-        }
-        if timeout:
-            kwargs['timeout'] = timeout
-        response = urlopen_with_retry(url, headers=headers)
-        try:
-            range_start = int(
-                response.headers[
-                    'content-range'
-                ][6:].split('/')[0].split('-')[0]
-            )
-            end_length = int(
-                response.headers['content-range'][6:].split('/')[1]
-            )
-            range_length = end_length - range_start
-        except Exception:
-            content_length = response.headers['content-length']
-            range_length = int(content_length) if content_length \
-                else float('inf')
-
-        if file_size != received + range_length:
-            received = 0
-            # if bar:
-            #     bar.received = 0
-            open_mode = 'wb'
-
-        with open(temp_filepath, open_mode) as output:
-            for chunk in response.iter_content(chunk_size=2048):
-                if chunk:
-                    output.write(chunk)
-                    received += len(chunk)
-                    # if bar:
-                    #     bar.update_received(len(chunk))
-
-    assert received == os.path.getsize(temp_filepath), '{} == {} == {}'.format(
-        received, os.path.getsize(temp_filepath), temp_filepath
-    )
-
-    if os.access(filepath, os.W_OK):
-        # on Windows rename could fail if destination filepath exists
-        os.remove(filepath)
-    os.rename(temp_filepath, filepath)
-
-    path = POST_HOST + '/'.join(filepath.split('/')[-2:])
-
-    return path
-
-
-class SimpleProgressBar:
-    term_size = term.get_terminal_size()[1]
-
-    def __init__(self, total_size, total_pieces=1):
-        self.displayed = False
-        self.total_size = total_size
-        self.total_pieces = total_pieces
-        self.current_piece = 1
-        self.received = 0
-        self.speed = ''
-        self.last_updated = time.time()
-
-        total_pieces_len = len(str(total_pieces))
-        # 38 is the size of all statically known size in self.bar
-        total_str = '%5s' % round(self.total_size / 1048576, 1)
-        total_str_width = max(len(total_str), 5)
-        self.bar_size = self.term_size - 28 - 2 * total_pieces_len \
-            - 2 * total_str_width
-        self.bar = '{:>4}%% ({:>%s}/%sMB) ├{:─<%s}┤[{:>%s}/{:>%s}] {}' % (
-            total_str_width, total_str, self.bar_size, total_pieces_len,
-            total_pieces_len
-        )
-
-    def update(self):
-        self.displayed = True
-        bar_size = self.bar_size
-        percent = round(self.received * 100 / self.total_size, 1)
-        if percent >= 100:
-            percent = 100
-        dots = bar_size * int(percent) // 100
-        plus = int(percent) - dots // bar_size * 100
-        if plus > 0.8:
-            plus = '█'
-        elif plus > 0.4:
-            plus = '>'
-        else:
-            plus = ''
-        bar = '█' * dots + plus
-        bar = self.bar.format(
-            percent, round(self.received / 1048576, 1), bar,
-            self.current_piece, self.total_pieces, self.speed
-        )
-        sys.stdout.write('\r' + bar)
-        sys.stdout.flush()
-
-    def update_received(self, n):
-        self.received += n
-        time_diff = time.time() - self.last_updated
-        bytes_ps = n / time_diff if time_diff else 0
-        if bytes_ps >= 1024 ** 3:
-            self.speed = '{:4.0f} GB/s'.format(bytes_ps / 1024 ** 3)
-        elif bytes_ps >= 1024 ** 2:
-            self.speed = '{:4.0f} MB/s'.format(bytes_ps / 1024 ** 2)
-        elif bytes_ps >= 1024:
-            self.speed = '{:4.0f} kB/s'.format(bytes_ps / 1024)
-        else:
-            self.speed = '{:4.0f}  B/s'.format(bytes_ps)
-        self.last_updated = time.time()
-        self.update()
-
-    def update_piece(self, n):
-        self.current_piece = n
-
-    def done(self):
-        if self.displayed:
-            print()
-            self.displayed = False
-
-
-class PiecesProgressBar:
-    def __init__(self, total_size, total_pieces=1):
-        self.displayed = False
-        self.total_size = total_size
-        self.total_pieces = total_pieces
-        self.current_piece = 1
-        self.received = 0
-
-    def update(self):
-        self.displayed = True
-        bar = '{0:>5}%[{1:<40}] {2}/{3}'.format(
-            '', '=' * 40, self.current_piece, self.total_pieces
-        )
-        sys.stdout.write('\r' + bar)
-        sys.stdout.flush()
-
-    def update_received(self, n):
-        self.received += n
-        self.update()
-
-    def update_piece(self, n):
-        self.current_piece = n
-
-    def done(self):
-        if self.displayed:
-            print()
-            self.displayed = False
-
-
-class DummyProgressBar:
-    def __init__(self, *args):
-        pass
-
-    def update_received(self, n):
-        pass
-
-    def update_piece(self, n):
-        pass
-
-    def done(self):
-        pass
-
-
-def get_output_filename(urls, title, ext, output_dir, merge):
-    # lame hack for the --output-filename option
-    global output_filename
-    if output_filename:
-        if ext:
-            return output_filename + '.' + ext
-        return output_filename
-
-    merged_ext = ext
-    if (len(urls) > 1) and merge:
-        from .processor.ffmpeg import has_ffmpeg_installed
-        if ext in ['flv', 'f4v']:
-            if has_ffmpeg_installed():
-                merged_ext = 'mp4'
-            else:
-                merged_ext = 'flv'
-        elif ext == 'mp4':
-            merged_ext = 'mp4'
-        elif ext == 'ts':
-            if has_ffmpeg_installed():
-                merged_ext = 'mkv'
-            else:
-                merged_ext = 'ts'
-    return '%s.%s' % (title, merged_ext)
-
-
-def download_urls(
-    urls, ext, total_size, output_dir='.', refer=None, merge=True,
-    headers=FAKE_HEADERS, **kwargs
-):
-    assert urls
-    if dry_run:
-        print('Real URLs:\n{}'.format('\n'.join(urls)))
-        return
-
-    if not total_size:
-        try:
-            total_size = urls_size(urls, headers=headers)
-        except:
-            import traceback
-            traceback.print_exc(file=sys.stdout)
-            pass
-
-    title = get_output_name()
-    output_filename = get_output_filename(urls, title, ext, output_dir, merge)
-    output_filepath = os.path.join(output_dir, output_filename)
-
-    if total_size:
-        bar = SimpleProgressBar(total_size, len(urls))
-    else:
-        bar = PiecesProgressBar(total_size, len(urls))
-
-    if len(urls) == 1:
-        url = urls[0]
-        print('Downloading %s ...' % tr(output_filename))
-        bar.update()
-        path = url_save(
-            url, output_filepath, bar, refer=refer, headers=headers, **kwargs
-        )
-        bar.done()
-        return path
-    else:
-        parts = []
-        print('Downloading %s.%s ...' % (tr(title), ext))
-        bar.update()
-        for i, url in enumerate(urls):
-            filename = '%s[%02d].%s' % (title, i, ext)
-            filepath = os.path.join(output_dir, filename)
-            parts.append(filepath)
-            # print 'Downloading %s [%s/%s]...' % (tr(filename), i + 1, len(urls))
-            bar.update_piece(i + 1)
-            url_save(
-                url, filepath, bar, refer=refer, is_part=True,
-                headers=headers, **kwargs
-            )
-        bar.done()
-
-        if not merge:
-            print()
-            return
-
-        if 'av' in kwargs and kwargs['av']:
-            from .processor.ffmpeg import has_ffmpeg_installed
-            if has_ffmpeg_installed():
-                from .processor.ffmpeg import ffmpeg_concat_av
-                ret = ffmpeg_concat_av(parts, output_filepath, ext)
-                print('Merged into %s' % output_filename)
-                if ret == 0:
-                    for part in parts:
-                        os.remove(part)
-
-        elif ext in ['flv', 'f4v']:
-            try:
-                from .processor.ffmpeg import has_ffmpeg_installed
-                if has_ffmpeg_installed():
-                    from .processor.ffmpeg import ffmpeg_concat_flv_to_mp4
-                    ffmpeg_concat_flv_to_mp4(parts, output_filepath)
-                else:
-                    from .processor.join_flv import concat_flv
-                    concat_flv(parts, output_filepath)
-                print('Merged into %s' % output_filename)
-            except:
-                raise
-            else:
-                for part in parts:
-                    os.remove(part)
-
-        elif ext == 'mp4':
-            try:
-                from .processor.ffmpeg import has_ffmpeg_installed
-                if has_ffmpeg_installed():
-                    from .processor.ffmpeg import ffmpeg_concat_mp4_to_mp4
-                    ffmpeg_concat_mp4_to_mp4(parts, output_filepath)
-                else:
-                    from .processor.join_mp4 import concat_mp4
-                    concat_mp4(parts, output_filepath)
-                print('Merged into %s' % output_filename)
-            except:
-                raise
-            else:
-                for part in parts:
-                    os.remove(part)
-
-        elif ext == 'ts':
-            try:
-                from .processor.ffmpeg import has_ffmpeg_installed
-                if has_ffmpeg_installed():
-                    from .processor.ffmpeg import ffmpeg_concat_ts_to_mkv
-                    ffmpeg_concat_ts_to_mkv(parts, output_filepath)
-                else:
-                    from .processor.join_ts import concat_ts
-                    concat_ts(parts, output_filepath)
-                print('Merged into %s' % output_filename)
-            except:
-                raise
-            else:
-                for part in parts:
-                    os.remove(part)
-
-        else:
-            print("Can't merge %s files" % ext)
-
-    print()
-
-
-def download_rtmp_url(
-    url, title, ext, params={}, total_size=0, output_dir='.', refer=None,
-    merge=True, faker=False
-):
-    assert url
-    if dry_run:
-        print('Real URL:\n%s\n' % [url])
-        if params.get('-y', False):  # None or unset -> False
-            print('Real Playpath:\n%s\n' % [params.get('-y')])
-        return
-
-    if player:
-        from .processor.rtmpdump import play_rtmpdump_stream
-        play_rtmpdump_stream(player, url, params)
-        return
-
-    from .processor.rtmpdump import (
-        has_rtmpdump_installed, download_rtmpdump_stream
-    )
-    assert has_rtmpdump_installed(), 'RTMPDump not installed.'
-    download_rtmpdump_stream(url,  title, ext, params, output_dir)
-
-
-def download_url_ffmpeg(
-    url, title, ext, params={}, total_size=0, output_dir='.', refer=None,
-    merge=True, faker=False, stream=True
-):
-    assert url
-    if dry_run:
-        print('Real URL:\n%s\n' % [url])
-        if params.get('-y', False):  # None or unset ->False
-            print('Real Playpath:\n%s\n' % [params.get('-y')])
-        return
-
-    if player:
-        launch_player(player, [url])
-        return
-
-    from .processor.ffmpeg import has_ffmpeg_installed, ffmpeg_download_stream
-    assert has_ffmpeg_installed(), 'FFmpeg not installed.'
-
-    global output_filename
-    if output_filename:
-        dotPos = output_filename.rfind('.')
-        if dotPos > 0:
-            title = output_filename[:dotPos]
-            ext = output_filename[dotPos+1:]
-        else:
-            title = output_filename
-
-    title = tr(get_filename(title))
-
-    ffmpeg_download_stream(url, title, ext, params, output_dir, stream=stream)
-
-
-def playlist_not_supported(name):
-    def f(*args, **kwargs):
-        raise NotImplementedError('Playlist is not supported for ' + name)
-    return f
-
-
-def print_info(site_info, title, type, size, **kwargs):
-
-    if type:
-        type = type.lower()
-    if type in ['3gp']:
-        type = 'video/3gpp'
-    elif type in ['asf', 'wmv']:
-        type = 'video/x-ms-asf'
-    elif type in ['flv', 'f4v']:
-        type = 'video/x-flv'
-    elif type in ['mkv']:
-        type = 'video/x-matroska'
-    elif type in ['mp3']:
-        type = 'audio/mpeg'
-    elif type in ['mp4']:
-        type = 'video/mp4'
-    elif type in ['mov']:
-        type = 'video/quicktime'
-    elif type in ['ts']:
-        type = 'video/MP2T'
-    elif type in ['webm']:
-        type = 'video/webm'
-
-    elif type in ['jpg']:
-        type = 'image/jpeg'
-    elif type in ['png']:
-        type = 'image/png'
-    elif type in ['gif']:
-        type = 'image/gif'
-
-    if type in ['video/3gpp']:
-        type_info = '3GPP multimedia file (%s)' % type
-    elif type in ['video/x-flv', 'video/f4v']:
-        type_info = 'Flash video (%s)' % type
-    elif type in ['video/mp4', 'video/x-m4v']:
-        type_info = 'MPEG-4 video (%s)' % type
-    elif type in ['video/MP2T']:
-        type_info = 'MPEG-2 transport stream (%s)' % type
-    elif type in ['video/webm']:
-        type_info = 'WebM video (%s)' % type
-    # elif type in ['video/ogg']:
-    #    type_info = 'Ogg video (%s)' % type
-    elif type in ['video/quicktime']:
-        type_info = 'QuickTime video (%s)' % type
-    elif type in ['video/x-matroska']:
-        type_info = 'Matroska video (%s)' % type
-    # elif type in ['video/x-ms-wmv']:
-    #    type_info = 'Windows Media video (%s)' % type
-    elif type in ['video/x-ms-asf']:
-        type_info = 'Advanced Systems Format (%s)' % type
-    # elif type in ['video/mpeg']:
-    #    type_info = 'MPEG video (%s)' % type
-    elif type in ['audio/mp4', 'audio/m4a']:
-        type_info = 'MPEG-4 audio (%s)' % type
-    elif type in ['audio/mpeg']:
-        type_info = 'MP3 (%s)' % type
-    elif type in ['audio/wav', 'audio/wave', 'audio/x-wav']:
-        type_info = 'Waveform Audio File Format ({})'.format(type)
-
-    elif type in ['image/jpeg']:
-        type_info = 'JPEG Image (%s)' % type
-    elif type in ['image/png']:
-        type_info = 'Portable Network Graphics (%s)' % type
-    elif type in ['image/gif']:
-        type_info = 'Graphics Interchange Format (%s)' % type
-    elif type in ['m3u8']:
-        if 'm3u8_type' in kwargs:
-            if kwargs['m3u8_type'] == 'master':
-                type_info = 'M3U8 Master {}'.format(type)
-        else:
-            type_info = 'M3U8 Playlist {}'.format(type)
-    else:
-        type_info = 'Unknown type (%s)' % type
-
-    maybe_print('Site:      ', site_info)
-    maybe_print('Title:     ', unescape_html(tr(title)))
-    print('Type:      ', type_info)
-    if type != 'm3u8':
-        print(
-            'Size:      ', round(size / 1048576, 2),
-            'MiB (' + str(size) + ' Bytes)'
-        )
-    if type == 'm3u8' and 'm3u8_url' in kwargs:
-        print('M3U8 Url:   {}'.format(kwargs['m3u8_url']))
-    print()
-
-
-def mime_to_container(mime):
-    mapping = {
-        'video/3gpp': '3gp',
-        'video/mp4': 'mp4',
-        'video/webm': 'webm',
-        'video/x-flv': 'flv',
-    }
-    if mime in mapping:
-        return mapping[mime]
-    else:
-        return mime.split('/')[1]
 
 
 def parse_host(host):
@@ -1164,122 +694,4 @@ def set_http_proxy(proxy):
     opener = request.build_opener(proxy_support)
     request.install_opener(opener)
 
-
-def print_more_compatible(*args, **kwargs):
-    import builtins as __builtin__
-    """Overload default print function as py (<3.3) does not support 'flush' keyword.
-    Although the function name can be same as print to get itself overloaded automatically,
-    I'd rather leave it with a different name and only overload it when importing to make less confusion.
-    """
-    # nothing happens on py3.3 and later
-    if sys.version_info[:2] >= (3, 3):
-        return __builtin__.print(*args, **kwargs)
-
-    # in lower pyver (e.g. 3.2.x), remove 'flush' keyword and flush it as requested
-    doFlush = kwargs.pop('flush', False)
-    ret = __builtin__.print(*args, **kwargs)
-    if doFlush:
-        kwargs.get('file', sys.stdout).flush()
-    return ret
-
-
-def download_main(download, download_playlist, urls, playlist, **kwargs):
-    for url in urls:
-        if re.match(r'https?://', url) is None:
-            url = 'http://' + url
-
-        if playlist:
-            download_playlist(url, **kwargs)
-        else:
-            download(url, **kwargs)
-
-
-def load_cookies(cookiefile):
-    global cookies
-    try:
-        cookies = cookiejar.MozillaCookieJar(cookiefile)
-        cookies.load()
-    except Exception:
-        import sqlite3
-        cookies = cookiejar.MozillaCookieJar()
-        con = sqlite3.connect(cookiefile)
-        cur = con.cursor()
-        try:
-            cur.execute("""SELECT host, path, isSecure, expiry, name, value
-                        FROM moz_cookies""")
-            for item in cur.fetchall():
-                c = cookiejar.Cookie(
-                    0, item[4], item[5], None, False, item[0],
-                    item[0].startswith('.'), item[0].startswith('.'),
-                    item[1], False, item[2], item[3], item[3] == '', None,
-                    None, {},
-                )
-                cookies.set_cookie(c)
-        except Exception:
-            pass
-        # TODO: Chromium Cookies
-        # SELECT host_key, path, secure, expires_utc, name, encrypted_value
-        # FROM cookies
-        # http://n8henrie.com/2013/11/use-chromes-cookies-for-easier-downloading-with-python-requests/
-
-
-def set_socks_proxy(proxy):
-    try:
-        import socks
-        socks_proxy_addrs = proxy.split(':')
-        socks.set_default_proxy(
-            socks.SOCKS5,
-            socks_proxy_addrs[0],
-            int(socks_proxy_addrs[1])
-        )
-        socket.socket = socks.socksocket
-
-        def getaddrinfo(*args):
-            return [
-                (socket.AF_INET, socket.SOCK_STREAM, 6, '', (args[0], args[1]))
-            ]
-        socket.getaddrinfo = getaddrinfo
-    except ImportError:
-        log.w(
-            'Error importing PySocks library, socks proxy ignored.'
-            'In order to use use socks proxy, please install PySocks.'
-        )
-
-
-def url_to_module(url):
-
-    video_host = r1(r'https?://([^/]+)/', url)
-    video_url = r1(r'https?://[^/]+(.*)', url)
-    assert video_host and video_url, "The url is wrong."
-
-    if video_host.endswith('.com.cn') or video_host.endswith('.ac.cn'):
-        video_host = video_host[:-3]
-    domain = r1(r'(\.[^.]+\.[^.]+)$', video_host) or video_host
-    assert domain, 'unsupported url: ' + url
-
-    # all non-ASCII code points must be quoted (percent-encoded UTF-8)
-    url = ''.join([ch if ord(ch) in range(128) else parse.quote(ch) for ch in url])
-    video_host = r1(r'https?://([^/]+)/', url)
-    video_url = r1(r'https?://[^/]+(.*)', url)
-
-    k = r1(r'([^.]+)', domain)
-    if k in SITES:
-        return (
-            # import_module('.'.join(['app', 'spider_store', 'extractors', SITES[k]])),
-            import_module('app.spider_store.extractors.' + SITES[k]),
-            url
-        )
-    else:
-        print('not supported')
-        return None, None
-
-
-def any_download(url, **kwargs):
-    m, url = url_to_module(url)
-    m.download(url, **kwargs)
-
-
-def any_download_playlist(url, **kwargs):
-    m, url = url_to_module(url)
-    m.download_playlist(url, **kwargs)
 

@@ -1,6 +1,4 @@
 # _*_ coding:utf-8 _*_
-import logging
-
 from lxml import etree
 from app.spider_store.common import (
     match1,
@@ -30,15 +28,30 @@ def bilibili_download(url):
 
     source = html.xpath('//meta[@itemprop="author"]/@content')[0]
     video_url = None
+    type = news_type(url)
 
     data = {
+        "type": type,
         "title": title,
         "source": source,
         "thumbnail_urls": thumbnail_url,
+        "image_urls": None,
         "video_url": video_url,
+        "ext": None,
+        "size": None,
     }
 
     return data
 
 
+def news_type(url):
+    if url:
+        return "video"
+
+
 download = bilibili_download
+
+
+if __name__ == '__main__':
+    data = bilibili_download("https://www.bilibili.com/video/av47723266")
+    print(data)
